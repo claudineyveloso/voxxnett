@@ -1306,11 +1306,11 @@ th.gridjs-th:last-child {
 :root {
   --bs-blue: #4099f3;
   --bs-indigo: #564ab1;
-  --bs-purple: #5052ba;
-  --bs-pink: #e83e8c;
-  --bs-red: #ed4b42;
-  --bs-orange: #fe9c41;
-  --bs-yellow: #f0c42b;
+  --bs-purple: #5052ba !important;
+  --bs-pink: #e83e8c !important;
+  --bs-red: #ed4b42 !important;
+  --bs-orange: #fe9c41 !important;
+  --bs-yellow: #f0c42b !important;
   --bs-green: #24ab5e;
   --bs-teal: #050505;
   --bs-cyan: #4099f3;
@@ -1355,11 +1355,11 @@ th.gridjs-th:last-child {
   --bs-font-sans-serif: "Source Sans Pro",sans-serif;
   --bs-font-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
-  --bs-body-font-family: Source Sans Pro,sans-serif;
-  --bs-body-font-size: 0.9375rem;
-  --bs-body-font-weight: 400;
-  --bs-body-line-height: 1.5;
-  --bs-body-color: #545965;
+  --bs-body-font-family: Source Sans Pro,sans-serif !important;
+  --bs-body-font-size: 0.9375rem !important;
+  --bs-body-font-weight: 400 !important;
+  --bs-body-line-height: 1.5 !important;
+  --bs-body-color: #545965 !important;
   --bs-body-bg: #f6f5fa ;
 }
 
@@ -55324,4 +55324,8 @@ body[data-layout-mode=dark] .gallery-box .box-content {
 
 .top-12 {
   top: 12px;
+}
+
+.color-title {
+  color: #645e7a;
 }

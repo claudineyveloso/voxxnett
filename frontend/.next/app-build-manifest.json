@@ -22,10 +22,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/pages/dashboard/page.js"
     ],
-    "/not-found": [
+    "/pages/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/pages/profile/page.js"
     ]
   }
 }

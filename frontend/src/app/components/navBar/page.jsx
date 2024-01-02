@@ -1,6 +1,10 @@
 import React from "react"
+import Link from 'next/link';
+import Image from "next/image"
+const Logo = require("../../assets/images/logo-light.png")
+const Avatar = require("../../assets/images/male.png")
 
-export default function NavBar() {
+export default function NavBar(props) {
 
   return (
     <div className="navbar-header">
@@ -9,27 +13,47 @@ export default function NavBar() {
         <div className="navbar-brand-box">
           <a href="index.html" className="logo logo-dark">
           <span className="logo-sm">
-          <img src="assets/images/logo-dark-sm.png" alt="" height="24" />
+            <Image 
+              src={Logo} 
+              width="113" 
+              height="24" 
+              alt='image' 
+            />
           </span>
           <span className="logo-lg">
-          <img src="assets/images/logo-dark.png" alt="" height="26" />
+            <Image 
+              src={Logo} 
+              width="113" 
+              height="24" 
+              alt='image' 
+            />
           </span>
           </a>
           <a href="index.html" className="logo logo-light">
           <span className="logo-sm">
-          <img src="assets/images/logo-light-sm.png" alt="" height="24" />
+            <Image 
+              src={Logo} 
+              width="113" 
+              height="24" 
+              alt='image' 
+            />
           </span>
           <span className="logo-lg">
-          <img src="assets/images/logo-light.png" alt="" height="26" />
+            <Image 
+              src={Logo} 
+              width="113" 
+              height="24" 
+              alt='image' 
+            />
           </span>
           </a>
         </div>
         <button type="button" className="btn btn-sm px-3 font-size-24 d-lg-none header-item" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
-        <i className="bx bx-menu align-middle"></i>
+          <i className="bx bx-menu align-middle"></i>
         </button>
         {/* <!-- start page title --> */}
         <div className="page-title-box align-self-center d-none d-md-block">
-          <h4 className="page-title mb-0">Horizontal</h4>
+          <h4 className="page-title mb-0">Horiontal</h4>
         </div>
         {/* <!-- end page title --> */}
       </div>
@@ -86,7 +110,13 @@ export default function NavBar() {
                         <a href="#!" className="text-reset notification-item">
                           <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
-                              <img src="assets/images/users/avatar-3.jpg" className="rounded-circle avatar-sm" alt="user-pic" />
+                              <Image 
+                                src={Avatar} 
+                                className="rounded-circle avatar-sm"
+                                width="42" 
+                                height="42" 
+                                alt="user-pic" 
+                              />
                             </div>
                             <div className="flex-grow-1">
                               <p className="text-muted font-size-13 mb-0 float-end">1 hour ago</p>
@@ -132,7 +162,13 @@ export default function NavBar() {
                         <a href="#!" className="text-reset notification-item">
                           <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
-                              <img src="assets/images/users/avatar-6.jpg" className="rounded-circle avatar-sm" alt="user-pic" />
+                              <Image 
+                                src={Avatar} 
+                                className="rounded-circle avatar-sm"
+                                width="42" 
+                                height="42" 
+                                alt="user-pic" 
+                              />
                             </div>
                             <div className="flex-grow-1">
                               <p className="text-muted font-size-13 mb-0 float-end">1 hour ago</p>
@@ -157,8 +193,8 @@ export default function NavBar() {
               </div>
             </div>
             <div className="p-2 border-top d-grid">
-              <a className="btn btn-sm btn-link font-size-14 btn-block text-center" href="javascript:void(0)">
-              <i className="uil-arrow-circle-right me-1"></i> <span>View More..</span>
+              <a className="btn btn-sm btn-link font-size-14 btn-block text-center" href="#">
+                <i className="uil-arrow-circle-right me-1"></i> <span>View More..</span>
               </a>
             </div>
           </div>
@@ -173,7 +209,13 @@ export default function NavBar() {
         </div>
         <div className="dropdown d-inline-block">
           <button type="button" className="btn header-item user text-start d-flex align-items-center" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img className="rounded-circle header-profile-user" src="assets/images/users/avatar-3.jpg" alt="Header Avatar" />
+          <Image 
+            src={Avatar} 
+            width="26" 
+            height="26" 
+            alt='image' 
+            className="rounded-circle header-profile-user" 
+          />
           <span className="d-none d-xl-inline-block ms-2 fw-medium font-size-15">Martin Gurley</span>
           </button>
           <div className="dropdown-menu dropdown-menu-end pt-0">
@@ -181,7 +223,17 @@ export default function NavBar() {
               <h6 className="mb-0">Martin Gurley</h6>
               <p className="mb-0 font-size-11 text-muted">martin.gurley@email.com</p>
             </div>
-            <a className="dropdown-item" href="contacts-profile.html"><i className="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i> <span className="align-middle">Profile</span></a>
+            <Link
+              href={"/pages/profile"}
+              className="dropdown-item"
+              role="button"
+            >
+              <i className="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i> 
+              <span className="align-middle">
+                Perfil
+              </span>
+            </Link>
+            
             <a className="dropdown-item" href="apps-chat.html"><i className="mdi mdi-message-text-outline text-muted font-size-16 align-middle me-2"></i> <span className="align-middle">Messages</span></a>
             <a className="dropdown-item" href="pages-faqs.html"><i className="mdi mdi-lifebuoy text-muted font-size-16 align-middle me-2"></i> <span className="align-middle">Help</span></a>
             <a className="dropdown-item d-flex align-items-center" href="#"><i className="mdi mdi-cog-outline text-muted font-size-16 align-middle me-2"></i> <span className="align-middle me-3">Settings</span><span className="badge badge-soft-success ms-auto">New</span></a>

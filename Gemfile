@@ -26,6 +26,7 @@ gem "puma", ">= 5.0"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -33,15 +34,30 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
+gem "rack-cors"
+gem 'devise'
+gem 'devise-jwt'
+gem 'htmlbeautifier'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ]
+  gem 'debug', platforms: %i[mri mingw x64_mingw]
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
+
 end
 
 group :development do
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
-end
+  gem 'annotate', '~> 3.2'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'rubocop', '~> 1.57'
+  gem 'rubocop-minitest', '~> 0.33.0', require: false
+  gem 'rubocop-rake', '~> 0.6.0', require: false
+  gem 'rubocop-shopify', '~> 2.14', require: false
+  gem 'rubocop-sorbet', '~> 0.7', require: false
+  gem 'ruby-lsp'
 
+end

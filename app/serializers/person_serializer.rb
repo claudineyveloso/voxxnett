@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # PeopleSerializer
-class PeopleSerializer
+class PersonSerializer
   include JSONAPI::Serializer
   attributes  :first_name,
               :last_name,

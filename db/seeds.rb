@@ -1,18 +1,20 @@
-# User.create(
-#   user_name: 'claudineyveloso',
-#   email: 'claudineyveloso@gmail.com',
-#   user_type: 'administrador',
-#   password: '12345678'
-# )
+# frozen_string_literal: true
 
-# 130.times do
-#   User.create(
-#     user_name: "#{Faker::Name.first_name}""#{Faker::Name.last_name}",
-#     email: Faker::Internet.email,
-#     user_type: %w[administrador proprietario atendimento].sample,
-#     password: '12345678'
-#   )
-# end
+User.create(
+  user_name: 'claudineyveloso',
+  email: 'claudineyveloso@gmail.com',
+  user_type: 'administrador',
+  password: '12345678'
+)
+
+130.times do
+  User.create(
+    user_name: "#{Faker::Name.first_name}""#{Faker::Name.last_name}",
+    email: Faker::Internet.email,
+    user_type: %w[administrador proprietario atendimento].sample,
+    password: '12345678'
+  )
+end
 
 200.times do
   Customer.create!(

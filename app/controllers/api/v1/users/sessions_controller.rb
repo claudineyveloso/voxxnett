@@ -15,7 +15,7 @@ module Api
             token: current_token,
             status: {
               code: 200, message: 'Logged in successfully.',
-              data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
+              data: { user: UserSerializer.new(current_user).serializable_hash }
             }
           }, status: :ok
         end

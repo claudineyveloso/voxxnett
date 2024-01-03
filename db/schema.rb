@@ -10,9 +10,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_02_024610) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_02_222302) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "street", limit: 100, null: false
+    t.string "complement", limit: 50
+    t.string "neighborhood", limit: 50, null: false
+    t.string "city", limit: 50, null: false
+    t.string "state", limit: 2, null: false
+    t.string "zip_code", limit: 15, null: false
+    t.string "addressable_type", null: false
+    t.bigint "addressable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "people_type", limit: 20
+    t.string "phone", limit: 15
+    t.string "cell_phone", limit: 15
+    t.text "observation"
+    t.string "email", limit: 100
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "people", force: :cascade do |t|
+    t.string "first_name", limit: 100, null: false
+    t.string "last_name", limit: 100, null: false
+    t.string "cpf_cnpj", limit: 15
+    t.string "identity_municipal_registration", limit: 20
+    t.string "dispatcher", limit: 20
+    t.datetime "birthday_date", null: false
+    t.string "personable_type", null: false
+    t.bigint "personable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["personable_type", "personable_id"], name: "index_people_on_personable"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "user_name", limit: 100, null: false

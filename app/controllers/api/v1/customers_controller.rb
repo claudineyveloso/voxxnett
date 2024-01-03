@@ -5,33 +5,8 @@ module Api
     # CustomersController
     class CustomersController < ApplicationController
       def index
-        customers = Customer.includes(:people).all
-        response_data = customers.map do |customer|
-          {
-            people_type: customer.people_type,
-            phone: customer.phone,
-            cell_phone: customer.cell_phone,
-            observation: customer.observation,
-            email: customer.email,
-            active: customer.active,
-            people: customer.people.as_json(only: %i[ first_name
-                                                      last_name
-                                                      cpf_cnpj
-                                                      identity_municipal_registration
-                                                      dispatcher
-                                                      birthday_date]),
-            addresses: customer.addresses.as_json(only: %i[ street
-                                                            complement
-                                                            neighborhood
-                                                            city
-                                                            state
-                                                            zip_code]),
-            status: :ok,
-            code: 200
-
-          }
-        end
-        render json: { data: response_data }
+        customers = Customer.all
+        render json: customers
       end
 
       def new; end
@@ -42,7 +17,10 @@ module Api
 
       def update; end
 
-      def show; end
+      def show
+        customer = Customer.find(params[:id])
+        render json: customer
+      end
 
       def destroy; end
 

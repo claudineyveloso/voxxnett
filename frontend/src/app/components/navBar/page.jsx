@@ -1,3 +1,4 @@
+'use client'
 import React from "react"
 import Link from 'next/link';
 import Image from "next/image"
@@ -12,40 +13,40 @@ export default function NavBar(props) {
         {/* <!-- LOGO --> */}
         <div className="navbar-brand-box">
           <a href="index.html" className="logo logo-dark">
-          <span className="logo-sm">
+            <span className="logo-sm">
             <Image 
               src={Logo} 
               width="113" 
               height="24" 
               alt='image' 
             />
-          </span>
-          <span className="logo-lg">
+            </span>
+            <span className="logo-lg">
             <Image 
               src={Logo} 
               width="113" 
               height="24" 
               alt='image' 
             />
-          </span>
+            </span>
           </a>
           <a href="index.html" className="logo logo-light">
-          <span className="logo-sm">
+            <span className="logo-sm">
             <Image 
               src={Logo} 
               width="113" 
               height="24" 
               alt='image' 
             />
-          </span>
-          <span className="logo-lg">
+            </span>
+            <span className="logo-lg">
             <Image 
               src={Logo} 
               width="113" 
               height="24" 
               alt='image' 
             />
-          </span>
+            </span>
           </a>
         </div>
         <button type="button" className="btn btn-sm px-3 font-size-24 d-lg-none header-item" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">

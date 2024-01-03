@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'customers/index'
   devise_for :users, path: '', path_names: {
                                  sign_in: 'login',
                                  sign_out: 'logout',
@@ -11,6 +10,12 @@ Rails.application.routes.draw do
                        sessions: 'api/v1/users/sessions',
                        registrations: 'api/v1/users/registrations'
                      }
+  namespace :api do
+    namespace :v1 do
+      resources :customers
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

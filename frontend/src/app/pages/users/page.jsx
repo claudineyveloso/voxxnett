@@ -86,7 +86,9 @@ export default function Users() {
                         <div className="row align-items-start">
                           <div className="col-sm">
                             <div className="mt-3 mt-md-0 mb-3">
-                              <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addInvoiceModal"><i className="mdi mdi-plus me-1"></i> Adicionar</button>
+                              <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addInvoiceModal">
+                                <i className="mdi mdi-plus me-1"></i> Adicionar
+                              </button>
                             </div>
                           </div>
                           
@@ -219,7 +221,7 @@ export default function Users() {
             </div>
             {/* Modal */}
             <div className="modal fade" id="addInvoiceModal" tabIndex="-1" aria-labelledby="addInvoiceModalLabel" aria-hidden="true">
-              <div className="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+              <div className="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
                 <div className="modal-content">
                   <div className="modal-header">
                     <h5 className="modal-title" id="addInvoiceModalLabel">Cadastro de usuário</h5>
@@ -227,7 +229,47 @@ export default function Users() {
                   </div>
                   <div className="modal-body p-4">
                     <form>
+                      <div className="form-floating mb-3">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="floatingInput"
+                          placeholder="Usuário"
+                        />
+                        <label htmlFor="floatingInput">Usuário</label>
+                      </div>
+                      <div className="form-floating mb-3">
+                        <input
+                          type="email"
+                          className="form-control"
+                          id="floatingInputEmail"
+                          placeholder="nome@email.com.br"
+                        />
+                        <label htmlFor="floatingInputEmail">Email</label>
+                      </div>
+                      <div className="row">
+                        <div className="col-md-6">
+                          <div className="form-floating mb-3">
+                            <input
+                              type="password"
+                              className="form-control"
+                              id="floatingInputPassword"
+                              placeholder="nome@email.com.br"
+                            />
+                            <label htmlFor="floatingInputPassword">Password</label>
+                          </div>
 
+                        </div>
+                        <div className="col-md-6">
+                          <div className="mb-3">
+                            <label className="form-label" for="formrow-password-input">Password</label>
+                            <input type="password" className="form-control" id="formrow-password-input" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 d-flex justify-content-end">
+                        <button type="submit" className="btn btn-primary w-md end-0">Salvar</button>
+                      </div>
                     </form>
                   </div>
                 </div>

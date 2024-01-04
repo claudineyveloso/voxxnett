@@ -7,6 +7,8 @@ class Customer < ApplicationRecord
   accepts_nested_attributes_for :people
   accepts_nested_attributes_for :addresses
 
+  has_many :users, through: :customers_users, dependent: :destroy
+
   validates :people_type,
             presence: true
 

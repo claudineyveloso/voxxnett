@@ -9,6 +9,6 @@ class CustomerSerializer < ActiveModel::Serializer
              :observation,
              :email,
              :active
-  has_many :people
-  has_many :addresses
+  has_many :people, serializer: PersonSerializer
+  has_many :addresses, serializer: AddressSerializer
 end

@@ -55329,3 +55329,18 @@ body[data-layout-mode=dark] .gallery-box .box-content {
 .color-title {
   color: #645e7a;
 }
+
+.gridjs-tr td {
+  border: 0 solid #eff0f2;
+  border-bottom-width: 1px;
+  padding: 0.75rem 0.75rem;
+}
+
+.page-link {
+  border-radius: 30px !important;
+  margin: 0 5px !important;
+}
+
+.align-disabled {
+  padding: 0px !important;
+}

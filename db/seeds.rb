@@ -39,3 +39,5 @@ end
     }]
   )
 end
+
+CustomersUser.create!(customer_id: Customer.first.id, user_id: User.first.id)

@@ -15,7 +15,7 @@ export default function Users() {
   const [userData, setUserData] = useState([])
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);  
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchUser, setSearchUser] = useState('');
 
   const itemsPerPage = 10;
   
@@ -41,6 +41,14 @@ export default function Users() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
+
+  const handleInputChange = (e) => {
+    setSearchUser(e.target.value);
+    setUserData(userData.filter(user =>
+      user.email.toLowerCase().includes(searchUser.toLowerCase())
+    ));
+    console.log(searchUser)
+  }
 
   const handleEditModal = (data) => {
 
@@ -110,8 +118,9 @@ export default function Users() {
                               placeholder="Localizar usuário..." 
                               aria-label="Type a keyword..." 
                               className="gridjs-input gridjs-search-input" 
-                              value={searchTerm}
-                              onChange={(e) => setSearchTerm(e.target.value)}
+                              value={searchUser}
+                              //onChange={(e) => setSearchTerm(e.target.value)}
+                              onChange={handleInputChange}
                             />
                           </div>
                         </div>

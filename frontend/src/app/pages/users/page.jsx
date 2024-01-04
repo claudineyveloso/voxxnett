@@ -15,6 +15,7 @@ export default function Users() {
   const [userData, setUserData] = useState([])
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);  
+  const [searchTerm, setSearchTerm] = useState('');
 
   const itemsPerPage = 10;
   
@@ -35,7 +36,7 @@ export default function Users() {
 
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const subset = userData.slice(startIndex, endIndex);
+  //const subset = userData.slice(startIndex, endIndex);
 
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
@@ -44,6 +45,18 @@ export default function Users() {
   const handleEditModal = (data) => {
 
   }
+
+  // function handleChange(e) {
+  //   //e.preventDefault();
+  //   //const value = e.target.value;
+  //   setUserData(userData.filter(user =>
+  //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  //   ));
+  // }
+
+  // const filteredUsers = userData.filter(user =>
+  //   user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   return (
     <>
@@ -92,7 +105,14 @@ export default function Users() {
                       <div role="complementary" className="gridjs gridjs-container" style={{width: '100%'}}>
                         <div className="gridjs-head">
                           <div className="gridjs-search">
-                            <input type="search" placeholder="Localizar usuário..." aria-label="Type a keyword..." className="gridjs-input gridjs-search-input" />
+                            <input 
+                              type="search" 
+                              placeholder="Localizar usuário..." 
+                              aria-label="Type a keyword..." 
+                              className="gridjs-input gridjs-search-input" 
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                           </div>
                         </div>
                         <div className="gridjs-wrapper" style={{height: 'auto'}}>
@@ -121,8 +141,8 @@ export default function Users() {
                               </tr>
                             </thead>
                             <tbody className="gridjs-tbody">
-                              {!!subset &&
-                                subset.map((data, i) => {
+                              {!!userData &&
+                                userData.slice(startIndex, endIndex).map((data, i) => {
                                 return <tr className="gridjs-tr" key={i}>
                                   <td data-column-id="code">
                                     <span>

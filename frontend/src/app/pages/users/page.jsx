@@ -9,7 +9,6 @@ import HeaderVertical from "@/app/components/headerVertical/page"
 import Pagination from "@/app/components/pagination/page";
 const Avatar = require("../../assets/images/male.png")
 
-
 export default function Users() {
 
   const [userData, setUserData] = useState([])

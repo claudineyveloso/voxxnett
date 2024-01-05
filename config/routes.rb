@@ -15,7 +15,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :customers
-      resources :users, only: [:index]
+      resources :users, only: [:index] do
+        post 'search/:filter', to: 'users#search', on: :collection
+        # collection do
+        #   post 'search/:email', action: 'search', as: 'api/v1/users#search/:email'
+        # end
+      end
     end
   end
 

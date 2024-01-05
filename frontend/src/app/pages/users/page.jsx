@@ -33,6 +33,19 @@ export default function Users() {
     fetchData(); 
   }, [])
 
+  useEffect(() => {
+    const apiUrl = 'http://localhost:3001'
+    const fetchDataSearch = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/v1/users/search/${searchUser}`);
+        setUserData(response.data);
+        setTotalPages(Math.ceil(response.data.length / itemsPerPage));
+      } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+      }
+    }
+  }, [setUserData])
+
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   //const subset = userData.slice(startIndex, endIndex);
@@ -41,12 +54,14 @@ export default function Users() {
     setCurrentPage(selectedPage.selected);
   };
 
-  const handleInputChange = (e) => {
-    setSearchUser(e.target.value);
-    setUserData(userData.filter(user =>
-      user.email.toLowerCase().includes(searchUser.toLowerCase())
-    ));
-    console.log(searchUser)
+  const handleInputChange = async (e) => {
+    fetchDataSearch
+    // debugger
+    // setSearchUser(e.target.value);
+    // await setUserData(userData.filter(user =>
+    //   user.email.toLowerCase().includes(searchUser.toLowerCase())
+    // ));
+    // console.log(searchUser)
   }
 
   const handleEditModal = (data) => {

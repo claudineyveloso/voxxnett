@@ -8,6 +8,7 @@ import axios from "axios"
 import HeaderVertical from "@/app/components/headerVertical/page"
 import Pagination from "@/app/components/pagination/page";
 const Avatar = require("../../assets/images/male.png")
+import Swal from 'sweetalert2';
 
 export default function Users() {
 
@@ -68,18 +69,28 @@ export default function Users() {
 
   }
 
-  // function handleChange(e) {
-  //   //e.preventDefault();
-  //   //const value = e.target.value;
-  //   setUserData(userData.filter(user =>
-  //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  //   ));
-  // }
+  const handleDelete = async (userId) => {
+    await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Esta ação não pode ser desfeita!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, deletar!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log('Esse é o valor de result dentro de handleDelete', result.message);
+        removeUser(userId);
+        Swal.fire('Deletado!', 'O registro foi deletado.', 'success');
+      }
+    });
+  }
 
-  // const filteredUsers = userData.filter(user =>
-  //   user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-
+  const removeUser =  async (userID) => {
+    await console.log('Valor do Id do usuário para ser deletado',userID)
+  }
+  
   return (
     <>
       <div id="layout-wrapper">
@@ -193,9 +204,18 @@ export default function Users() {
                                           </a> 
                                         </li>
                                         <li className="list-inline-item"> 
-                                          <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="" className="px-2 text-danger" data-bs-original-title="Delete" aria-label="Delete">
+                                          <Link
+                                            href='#'
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="" 
+                                            className="px-2 text-danger" 
+                                            data-bs-original-title="Delete" 
+                                            aria-label="Delete"
+                                            onClick={() => handleDelete(data.id)}
+                                          >
                                             <i className="bx bx-trash-alt font-size-18"></i>
-                                          </a>
+                                          </Link>
                                         </li>
                                         <li className="list-inline-item dropdown">
                                           <a className="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
@@ -244,44 +264,37 @@ export default function Users() {
                   </div>
                   <div className="modal-body p-4">
                     <form>
-                      <div className="form-floating mb-3">
+                      <div className="mb-3">
                         <input
                           type="text"
                           className="form-control"
-                          id="floatingInput"
                           placeholder="Usuário"
                         />
-                        <label htmlFor="floatingInput">Usuário</label>
                       </div>
-                      <div className="form-floating mb-3">
+                      <div className="mb-3">
                         <input
                           type="email"
                           className="form-control"
-                          id="floatingInputEmail"
-                          placeholder="nome@email.com.br"
+                          placeholder="Email"
                           autoComplete='new-password'
                         />
-                        <label htmlFor="floatingInputEmail">Email</label>
                       </div>
                       <div className="row">
                         <div className="col-md-6">
-                          <div className="form-floating mb-3">
+                          <div className="mb-3">
                             <input
                               type="password"
                               className="form-control"
-                              id="floatingInputPassword"
-                              placeholder="nome@email.com.br"
+                              placeholder="Senha"
                             />
-                            <label htmlFor="floatingInputPassword">Senha</label>
                           </div>
 
                         </div>
                         <div className="col-md-6">
-                          <div className="form-floating mb-3">
+                          <div className="mb-3">
                             <select 
                               defaultValue={defaultValue} 
                               className="form-select" 
-                              id="floatingSelectGrid" 
                               aria-label="Floating label select example"
                             >
                               {optionsTypeUser.map((option) => (
@@ -290,13 +303,66 @@ export default function Users() {
                                 </option>
                               ))}
                             </select>
-                            <label htmlFor="floatingSelectGrid">Works with selects</label>
                           </div>
                         </div>
                       </div>
-                      <div className="mt-4 d-flex justify-content-end">
-                        <button type="submit" className="btn btn-primary w-md end-0">Salvar</button>
+                      <div className="row">
+                        <ul className="nav nav-tabs" role="tablist">
+                          <li className="nav-item">
+                            <a className="nav-link active" data-bs-toggle="tab" href="#person-data" role="tab" aria-selected="true">
+                            <span className="d-block d-sm-none"><i className="fas fa-home"></i></span>
+                            <span className="d-none d-sm-block">Dados Pessoais</span>    
+                            </a>
+                          </li>
+                          <li className="nav-item">
+                            <a className="nav-link" data-bs-toggle="tab" href="#address" role="tab" aria-selected="false">
+                            <span className="d-block d-sm-none"><i className="far fa-user"></i></span>
+                            <span className="d-none d-sm-block">Endereço</span>    
+                            </a>
+                          </li>
+                        </ul>
+
+                        <div className="tab-content p-3 text-muted">
+                          <div className="tab-pane active" id="person-data" role="tabpanel">
+                            
+                            <p className="mb-0">
+                              Raw denim you probably haven't heard of them jean shorts Austin.
+                              Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache
+                              cliche tempor, williamsburg carles vegan helvetica. Reprehenderit
+                              butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi,
+                              qui irure terry richardson ex squid. Aliquip placeat salvia cillum
+                              iphone. Seitan aliquip quis cardigan american apparel, butcher
+                              voluptate nisi qui.
+                            </p>
+                          </div>
+                          <div className="tab-pane" id="address" role="tabpanel">
+                            <p className="mb-0">
+                              Food truck fixie locavore, accusamus mcsweeney's marfa nulla
+                              single-origin coffee squid. Exercitation +1 labore velit, blog
+                              sartorial PBR leggings next level wes anderson artisan four loko
+                              farm-to-table craft beer twee. Qui photo booth letterpress,
+                              commodo enim craft beer mlkshk aliquip jean shorts ullamco ad
+                              vinyl cillum PBR. Homo nostrud organic, assumenda labore
+                              aesthetic magna delectus.
+                            </p>
+                          </div>
+                        </div>
+
+
+
                       </div>
+                      <div className="row mt-2">
+                        <div className="col-12 text-end">
+                          <button type="button" className="btn btn-danger me-1" data-bs-dismiss="modal">
+                            <i className="bx bx-x me-1 align-middle"></i> 
+                            Cancelar
+                          </button>
+                          <button type="submit" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#success-btn" id="btn-save-event">
+                            <i class="bx bx-check me-1 align-middle"></i> 
+                            Salvar
+                          </button>
+                        </div>
+                      </div>                      
                     </form>
                   </div>
                 </div>

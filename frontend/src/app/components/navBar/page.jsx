@@ -11,7 +11,7 @@ const Avatar = require("../../assets/images/male.png")
 export default function NavBar(props) {
   const { authenticated, handleLogout, infoUser } = useContext(AuthContext)
   const router = useRouter()
-  console.log(infoUser)
+  console.log('Valor de infoUser dentro de users/page',infoUser)
   const Logout = async () => {
     await handleLogout();
     router.push('/pages/login')

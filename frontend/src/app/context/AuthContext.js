@@ -37,7 +37,7 @@ function AuthProvider ({ children }) {
       })
       localStorage.setItem('voxxNettUseToken', JSON.stringify(token));
       api.defaults.headers.Authorization = `Bearer ${token}`;
-      console.log(response.data)
+      console.log('Valor de response em AuthContext.js', response.data)
       router.push('/');
      }).catch(function(err) {
       console.log('Apresentação do erro', err);

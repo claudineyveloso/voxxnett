@@ -42,14 +42,15 @@ export default function Users() {
     const apiUrl = 'http://localhost:3001'
     const fetchDataSearch = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/v1/users/search/${searchUser}`);
+        const response = await axios.post(`${apiUrl}/api/v1/users/search/${searchUser}`);
         setUserData(response.data);
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
     }
-  }, [setUserData])
+    fetchDataSearch(); 
+  }, [searchUser])
 
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -60,13 +61,7 @@ export default function Users() {
   };
 
   const handleInputChange = async (e) => {
-    fetchDataSearch
-    // debugger
-    // setSearchUser(e.target.value);
-    // await setUserData(userData.filter(user =>
-    //   user.email.toLowerCase().includes(searchUser.toLowerCase())
-    // ));
-    // console.log(searchUser)
+    setSearchUser(e.target.value);
   }
 
   const handleEditModal = (data) => {
@@ -282,10 +277,10 @@ export default function Users() {
 
                         </div>
                         <div className="col-md-6">
-                          <div class="form-floating mb-3">
+                          <div className="form-floating mb-3">
                             <select 
                               defaultValue={defaultValue} 
-                              class="form-select" 
+                              className="form-select" 
                               id="floatingSelectGrid" 
                               aria-label="Floating label select example"
                             >
@@ -295,7 +290,7 @@ export default function Users() {
                                 </option>
                               ))}
                             </select>
-                            <label for="floatingSelectGrid">Works with selects</label>
+                            <label htmlFor="floatingSelectGrid">Works with selects</label>
                           </div>
                         </div>
                       </div>

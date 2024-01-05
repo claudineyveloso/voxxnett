@@ -9,9 +9,9 @@ const Logo = require("../../assets/images/logo-light.png")
 const Avatar = require("../../assets/images/male.png")
 
 export default function NavBar(props) {
-  const { authenticated, handleLogout } = useContext(AuthContext)
+  const { authenticated, handleLogout, infoUser } = useContext(AuthContext)
   const router = useRouter()
-  
+  console.log(infoUser)
   const Logout = async () => {
     await handleLogout();
     router.push('/pages/login')
@@ -228,12 +228,12 @@ export default function NavBar(props) {
             alt='image' 
             className="rounded-circle header-profile-user" 
           />
-          <span className="d-none d-xl-inline-block ms-2 fw-medium font-size-15">Martin Gurley</span>
+          <span className="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{infoUser.email}</span>
           </button>
           <div className="dropdown-menu dropdown-menu-end pt-0">
             <div className="p-3 border-bottom">
-              <h6 className="mb-0">Martin Gurley</h6>
-              <p className="mb-0 font-size-11 text-muted">martin.gurley@email.com</p>
+              <h6 className="mb-0">{infoUser.email}</h6>
+              <p className="mb-0 font-size-11 text-muted">{infoUser.user_name}</p>
             </div>
             <Link
               href={"/pages/profile"}

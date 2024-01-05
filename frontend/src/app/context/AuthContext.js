@@ -12,7 +12,9 @@ const AuthContext = createContext();
 function AuthProvider ({ children }) {
   const [authenticated, setAuthenticated] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [infoUser, setInfoUser] = useState({});
   const router = useRouter()
+
   useEffect(() => {
     const token = localStorage.getItem('voxxNettUseToken');
     if (token != null) {
@@ -29,6 +31,10 @@ function AuthProvider ({ children }) {
     const response = await axios.post(`${apiUrl}/login`, { "user": { "email": email, "password": password }  })
      .then((response) => {
       const token = response.data.token
+      setInfoUser({
+        email: response.data.status.data.user.email,
+        user_name: response.data.status.data.user.user_name
+      })
       localStorage.setItem('voxxNettUseToken', JSON.stringify(token));
       api.defaults.headers.Authorization = `Bearer ${token}`;
       console.log(response.data)
@@ -48,7 +54,7 @@ function AuthProvider ({ children }) {
 
 
   return (
-    <AuthContext.Provider value={{ authenticated, loading, handleLogin, handleLogout }}>
+    <AuthContext.Provider value={{ authenticated, loading, infoUser, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

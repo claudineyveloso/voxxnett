@@ -8,6 +8,11 @@ module Api
         users = User.all
         render json: users, each_serializer: UserSerializer
       end
+
+      def search
+        filtered = User.where('email ILIKE ?', "%#{params[:filter]}%").order(email: :asc)
+        render json: filtered, each_serializer: UserSerializer
+      end
     end
   end
 end

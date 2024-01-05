@@ -27,18 +27,7 @@ export default function Login() {
 
 
   async function createUser(data) {
-    handleLogin(data.email, data.password)
-    // const response = await axios.post('/api/v1/login', { "user": { "user_name": data.user_name, "password": data.password }  })
-    //  .then((response) => {
-    //   console.log(response.data)
-    //   //setOutput(respponse.data.message)
-    //  }).catch(function(err) {
-    //   console.log('Apresentação do erro', err);
-    //   return err;
-    //  })
-    
-    //   console.log(response.data); 
-    // setOutput(JSON.stringify(data, null, 2))
+    await handleLogin(data.email, data.password)
   }
 
   const togglePassword = () => {

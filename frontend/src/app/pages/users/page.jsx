@@ -15,9 +15,14 @@ export default function Users() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);  
   const [searchUser, setSearchUser] = useState('');
-
   const itemsPerPage = 10;
-  
+  const optionsTypeUser = [
+    { value: '', label: 'Selecione o Tipo de Usuário' },
+    { value: 'administrador', label: 'Administrador' },
+    { value: 'proprietario', label: 'Proprietário' },
+    { value: 'atendimento', label: 'Atendimento' },
+  ];
+  const defaultValue = '';
 
   useEffect(() => {
     const apiUrl = 'http://localhost:3001'
@@ -244,6 +249,7 @@ export default function Users() {
                           className="form-control"
                           id="floatingInputEmail"
                           placeholder="nome@email.com.br"
+                          autoComplete='new-password'
                         />
                         <label htmlFor="floatingInputEmail">Email</label>
                       </div>
@@ -256,14 +262,25 @@ export default function Users() {
                               id="floatingInputPassword"
                               placeholder="nome@email.com.br"
                             />
-                            <label htmlFor="floatingInputPassword">Password</label>
+                            <label htmlFor="floatingInputPassword">Senha</label>
                           </div>
 
                         </div>
                         <div className="col-md-6">
-                          <div className="mb-3">
-                            <label className="form-label" for="formrow-password-input">Password</label>
-                            <input type="password" className="form-control" id="formrow-password-input" />
+                          <div class="form-floating mb-3">
+                            <select 
+                              defaultValue={defaultValue} 
+                              class="form-select" 
+                              id="floatingSelectGrid" 
+                              aria-label="Floating label select example"
+                            >
+                              {optionsTypeUser.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            <label for="floatingSelectGrid">Works with selects</label>
                           </div>
                         </div>
                       </div>

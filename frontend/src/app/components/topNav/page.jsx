@@ -274,7 +274,13 @@ export default function TopNav(){
                       <a href="auth-register.html" className="dropdown-item" data-key="t-register">Register</a>
                       <a href="auth-recoverpw.html" className="dropdown-item" data-key="t-recover-password">Recover Password</a>
                       <a href="auth-lock-screen.html" className="dropdown-item" data-key="t-lock-screen">Lock Screen</a>
-                      <a href="auth-logout.html" className="dropdown-item" data-key="t-logout">Logout</a>
+                      <Link
+                        href="/"
+                        className="dropdown-item" 
+                        data-key="t-logout"
+                      >
+                        Sair
+                      </Link>
                       <a href="auth-confirm-mail.html" className="dropdown-item" data-key="t-confirm-mail">Confirm Mail</a>
                       <a href="auth-email-verification.html" className="dropdown-item" data-key="t-email-verification">Email Verification</a>
                       <a href="auth-two-step-verification.html" className="dropdown-item" data-key="t-two-step-verification">Two Step Verification</a>

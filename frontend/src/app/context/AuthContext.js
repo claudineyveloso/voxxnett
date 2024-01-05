@@ -3,6 +3,7 @@ import React,  { createContext, useState, useEffect }  from "react";
 import { useRouter } from 'next/navigation'
 import axios from 'axios';
 import api from "../components/api";
+//import { redirect } from "next/dist/server/api-utils";
 
 //import history from '../components/history';
 
@@ -17,14 +18,10 @@ function AuthProvider ({ children }) {
     if (token != null) {
       api.defaults.headers.Authorization = `Bearer ${JSON.parse(token)}`;
       setAuthenticated(true);
-      console.log('Tem token')
-      router.push('/');
     } else {
-      console.log('Não tem token')
       router.push('/pages/login');
     }
     setLoading(false);
-
   }, [])
 
   async function handleLogin(email, password) {
@@ -35,24 +32,23 @@ function AuthProvider ({ children }) {
       localStorage.setItem('voxxNettUseToken', JSON.stringify(token));
       api.defaults.headers.Authorization = `Bearer ${token}`;
       console.log(response.data)
-      router.push('/pages/dashboard');
-      setAuthenticated(true);
+      router.push('/');
      }).catch(function(err) {
       console.log('Apresentação do erro', err);
       return err;
      })
   }
 
-  function handleLogout() {
+
+  const handleLogout = () => {
     setAuthenticated(false);
     localStorage.removeItem('voxxNettUseToken');
     api.defaults.headers.Authorization = undefined;
-    router.push('/pages/login');
   }
 
 
   return (
-    <AuthContext.Provider value={{ authenticated, loading, handleLogin }}>
+    <AuthContext.Provider value={{ authenticated, loading, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

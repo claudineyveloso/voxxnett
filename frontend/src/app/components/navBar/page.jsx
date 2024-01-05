@@ -2,10 +2,21 @@
 import React from "react"
 import Link from 'next/link';
 import Image from "next/image"
+import { useRouter,redirect } from 'next/navigation'
+import { useContext } from "react"
+import { AuthContext } from "../../context/AuthContext";
 const Logo = require("../../assets/images/logo-light.png")
 const Avatar = require("../../assets/images/male.png")
 
 export default function NavBar(props) {
+  const { authenticated, handleLogout } = useContext(AuthContext)
+  const router = useRouter()
+  
+  const Logout = async () => {
+    await handleLogout();
+    router.push('/pages/login')
+  }
+
 
   return (
     <div className="navbar-header">
@@ -240,7 +251,13 @@ export default function NavBar(props) {
             <a className="dropdown-item d-flex align-items-center" href="#"><i className="mdi mdi-cog-outline text-muted font-size-16 align-middle me-2"></i> <span className="align-middle me-3">Settings</span><span className="badge badge-soft-success ms-auto">New</span></a>
             <a className="dropdown-item" href="auth-lock-screen.html"><i className="mdi mdi-lock text-muted font-size-16 align-middle me-2"></i> <span className="align-middle">Lock screen</span></a>
             <div className="dropdown-divider"></div>
-            <a className="dropdown-item" href="auth-logout.html"><i className="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i> <span className="align-middle">Logout</span></a>
+            <Link 
+              className="dropdown-item" 
+              href="#"
+              onClick={Logout}
+            >
+              Sair
+            </Link>
           </div>
         </div>
       </div>

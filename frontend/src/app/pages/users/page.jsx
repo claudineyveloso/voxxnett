@@ -9,6 +9,7 @@ import HeaderVertical from "@/app/components/headerVertical/page"
 import Pagination from "@/app/components/pagination/page";
 const Avatar = require("../../assets/images/male.png")
 import Swal from 'sweetalert2';
+import Modal from "./create/_modal";
 
 export default function Users() {
 
@@ -112,9 +113,13 @@ export default function Users() {
                         <div className="row align-items-start">
                           <div className="col-sm">
                             <div className="mt-3 mt-md-0 mb-3">
-                              <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addInvoiceModal">
+                              <Link 
+                                href='/pages/users/create'
+                                className="btn btn-success"
+                              
+                              >
                                 <i className="mdi mdi-plus me-1"></i> Adicionar
-                              </button>
+                              </Link>
                             </div>
                           </div>
                           
@@ -192,7 +197,14 @@ export default function Users() {
                                       <a href="#" className="text-body">{data.email}</a>
                                     </span>
                                   </td>
-                                  <td data-column-id="code" style={{ textTransform: 'capitalize'}}>{data.user_type}</td>
+                                  <td data-column-id="code" style={{ textTransform: 'capitalize'}}>
+                                    <span>
+                                      <span className={`badge badge-pill badge-soft-success font-size-12`}>
+                                        {data.user_type}
+                                      </span>
+                                    </span>                                    
+                                    
+                                  </td>
                                   <td data-column-id="code">{data.id}</td>
                                   <td data-column-id="code">{data.user_name}</td>
                                   <td data-column-id="viewDetails" className="gridjs-td">
@@ -236,143 +248,27 @@ export default function Users() {
                           </table>
                         </div>
                       </div>
-                    <div className="row">
-                      <div className="d-flex mt-4 justify-content-center ">
-                        <div className="paginate">
-                          <Pagination
-                            pageCount={totalPages} // Total number of pages 
-                            onPageChange={handlePageChange}// Function called when changing pages
-                            forcePage={currentPage}
-                          />
+                      <div className="row">
+                        <div className="d-flex mt-4 justify-content-center ">
+                          <div className="paginate">
+                            <Pagination
+                              pageCount={totalPages} // Total number of pages 
+                              onPageChange={handlePageChange}// Function called when changing pages
+                              forcePage={currentPage}
+                            />
+                          </div>
                         </div>
-
                       </div>
-                    </div>
-
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             {/* Modal */}
-            <div className="modal fade" id="addInvoiceModal" tabIndex="-1" aria-labelledby="addInvoiceModalLabel" aria-hidden="true">
-              <div className="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="addInvoiceModalLabel">Cadastro de usuário</h5>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div className="modal-body p-4">
-                    <form>
-                      <div className="mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Usuário"
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <input
-                          type="email"
-                          className="form-control"
-                          placeholder="Email"
-                          autoComplete='new-password'
-                        />
-                      </div>
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="mb-3">
-                            <input
-                              type="password"
-                              className="form-control"
-                              placeholder="Senha"
-                            />
-                          </div>
-
-                        </div>
-                        <div className="col-md-6">
-                          <div className="mb-3">
-                            <select 
-                              defaultValue={defaultValue} 
-                              className="form-select" 
-                              aria-label="Floating label select example"
-                            >
-                              {optionsTypeUser.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <ul className="nav nav-tabs" role="tablist">
-                          <li className="nav-item">
-                            <a className="nav-link active" data-bs-toggle="tab" href="#person-data" role="tab" aria-selected="true">
-                            <span className="d-block d-sm-none"><i className="fas fa-home"></i></span>
-                            <span className="d-none d-sm-block">Dados Pessoais</span>    
-                            </a>
-                          </li>
-                          <li className="nav-item">
-                            <a className="nav-link" data-bs-toggle="tab" href="#address" role="tab" aria-selected="false">
-                            <span className="d-block d-sm-none"><i className="far fa-user"></i></span>
-                            <span className="d-none d-sm-block">Endereço</span>    
-                            </a>
-                          </li>
-                        </ul>
-
-                        <div className="tab-content p-3 text-muted">
-                          <div className="tab-pane active" id="person-data" role="tabpanel">
-                            
-                            <p className="mb-0">
-                              Raw denim you probably haven't heard of them jean shorts Austin.
-                              Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache
-                              cliche tempor, williamsburg carles vegan helvetica. Reprehenderit
-                              butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi,
-                              qui irure terry richardson ex squid. Aliquip placeat salvia cillum
-                              iphone. Seitan aliquip quis cardigan american apparel, butcher
-                              voluptate nisi qui.
-                            </p>
-                          </div>
-                          <div className="tab-pane" id="address" role="tabpanel">
-                            <p className="mb-0">
-                              Food truck fixie locavore, accusamus mcsweeney's marfa nulla
-                              single-origin coffee squid. Exercitation +1 labore velit, blog
-                              sartorial PBR leggings next level wes anderson artisan four loko
-                              farm-to-table craft beer twee. Qui photo booth letterpress,
-                              commodo enim craft beer mlkshk aliquip jean shorts ullamco ad
-                              vinyl cillum PBR. Homo nostrud organic, assumenda labore
-                              aesthetic magna delectus.
-                            </p>
-                          </div>
-                        </div>
-
-
-
-                      </div>
-                      <div className="row mt-2">
-                        <div className="col-12 text-end">
-                          <button type="button" className="btn btn-danger me-1" data-bs-dismiss="modal">
-                            <i className="bx bx-x me-1 align-middle"></i> 
-                            Cancelar
-                          </button>
-                          <button type="submit" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#success-btn" id="btn-save-event">
-                            <i class="bx bx-check me-1 align-middle"></i> 
-                            Salvar
-                          </button>
-                        </div>
-                      </div>                      
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Modal />
           </div>
         </div>
       </div>
-
     </>
-
   )
 }

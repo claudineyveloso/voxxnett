@@ -51,7 +51,7 @@
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0)) !important;
   --bs-body-font-family: Source Sans Pro, sans-serif !important;
-  --bs-body-font-size: 0.9375rem !important;
+  --bs-body-font-size: 0.813rem !important;
   --bs-body-font-weight: 400 !important;
   --bs-body-line-height: 1.5 !important;
   --bs-body-color: #545965 !important;
@@ -102,7 +102,7 @@
 
 .invalid {
   width: 100%;
-  font-size: 87.5%;
+  font-size: 0.875rem;
   color: #ed4b42;
 }
 
@@ -175,4 +175,9 @@ ul li > page-link:last-child  {
   border-bottom-width: 1px;
   padding: 0.75rem 0.75rem;
 
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  color: #5052ba;
+  background-color: rgba(80,82,186,.3);
 }

@@ -1,4 +1,5 @@
 'use client'
+import {useState} from "react";
 import { useContext } from "react"
 import { AuthContext } from "../../context/AuthContext";
 import Link from 'next/link';
@@ -38,7 +39,8 @@ export default function Login() {
       togglePassword.type = "password";
     }
   }
-
+  
+  
 
   return (
     
@@ -56,7 +58,7 @@ export default function Login() {
                   </div>
                   <div className="p-2 mt-3">
                     <form onSubmit={handleSubmit(createUser)}>
-                      <div className="mb-3">
+                      <div className="mb-3 position-relative">
                         <div className="position-relative input-custom-icon">
                           <input 
                             type="email"
@@ -71,11 +73,12 @@ export default function Login() {
                             <circle cx="12" cy="7" r="4"></circle>
                           </svg>
                         </div>
-                        <div className="invalid mt-1">
-                          {errors.email && <span>{errors.email.message}</span>}
+                        <div className='invalid mt-1'>
+                        {errors.email && <span>{errors.email.message}</span>}
                         </div>
+
                       </div>
-                      <div className="mb-3">
+                      <div className="mb-3 position-relative">
                         <div className="position-relative auth-pass-inputgroup input-custom-icon">
                           <span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-lock mt-0">
@@ -95,7 +98,7 @@ export default function Login() {
                             <i className="mdi mdi-eye-outline font-size-18 text-muted"></i>
                           </button>
                         </div>
-                        <div className="invalid mt-1">
+                        <div className='invalid mt-1'>
                           {errors.password && <span>{errors.password.message}</span>}
                         </div>
 

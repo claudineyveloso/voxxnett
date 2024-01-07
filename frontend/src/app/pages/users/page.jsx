@@ -9,7 +9,7 @@ import HeaderVertical from "@/app/components/headerVertical/page"
 import Pagination from "@/app/components/pagination/page";
 const Avatar = require("../../assets/images/male.png")
 import Swal from 'sweetalert2';
-import Modal from "./create/_modal";
+
 
 export default function Users() {
 
@@ -265,7 +265,6 @@ export default function Users() {
               </div>
             </div>
             {/* Modal */}
-            <Modal />
           </div>
         </div>
       </div>

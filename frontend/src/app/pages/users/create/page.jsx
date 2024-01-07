@@ -1,38 +1,110 @@
 'use client'
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { AuthContext } from "../../../context/AuthContext";
 import Link from "next/link"
 import { useForm } from 'react-hook-form';
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
 import HeaderVertical from "@/app/components/headerVertical/page"
+import BrazilianStates from "@/app/components/brazilianStates";
 
-const createUserFormSchema = z.object({
-  user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
-  email: z.string().email('Informe um endereço de e-mail válido!'),
-  password: z.string().nonempty('A senha é obrigatória').min(8, 'A senha deve ter no mínimo 8 caracteres.'),
-  user_type: z.string().nonempty('Tipo de usuário não pode ficar vazio!')
-})
-
+// const createUserFormSchema = z.object({
+//   user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
+//   email: z.string().email('Informe um endereço de e-mail válido!'),
+//   password: z.string().nonempty('A senha é obrigatória').min(8, 'A senha deve ter no mínimo 8 caracteres.'),
+//   user_type: z.string().refine((valor) => {
+//     return valor.trim() !== "";
+//   }, {
+//     message: "Tipo de usuário não pode ficar vazio!",
+//   }),
+//   first_name: z.string().nonempty('Nome não pode ficar vazio!'),
+//   last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
+//   street: z.string().nonempty('Logradouro não pode ficar vazio!'),
+//   neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
+//   city: z.string().nonempty('Cidade não pode ficar vazio!'),
+//   state: z.string().nonempty('Estado não pode ficar vazio!'),
+//   zip_code: z.string().nonempty('Cep não pode ficar vazio!'),
+  
+// })
 
 export default function UserForm() {
 
-  const { authenticated, handleLogin } = useContext(AuthContext)
-  const { register, handleSubmit, formState: {errors} } = useForm({
-    resolver: zodResolver(createUserFormSchema)
+  const customerSchema = z.object({
+    user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
+    email: z.string().email('Informe um endereço de e-mail válido!'),
+    password: z.string().nonempty('A senha é obrigatória').min(8, 'A senha deve ter no mínimo 8 caracteres.'),
+    user_type: z.string().refine((valor) => {
+      return valor.trim() !== "";
+    }, {
+      message: "Tipo de usuário não pode ficar vazio!",
+    }),
+  });
+
+  const personSchema = z.object({
+    first_name: z.string().nonempty('Nome não pode ficar vazio!'),
+    last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
+    birthday_date: z.string().nonempty('A data de aniversário não pode ficar vazio!'),
   })
 
+  const addressSchema = z.object({
+    street: z.string().nonempty('Logradouro não pode ficar vazio!'),
+    neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
+    city: z.string().nonempty('Cidade não pode ficar vazio!'),
+    state: z.string().nonempty('Estado não pode ficar vazio!'),
+    zip_code: z.string().nonempty('Cep não pode ficar vazio!'),
+  });
+
+  const schema = z.object({
+    customer: customerSchema,
+    person: personSchema,
+    address: addressSchema,
+  });
+
+  const { authenticated, handleLogin } = useContext(AuthContext)
+  const [userData, setUserData] = useState({
+    user_name: '',
+    email: '',
+    user_type: '',
+    password: '',
+    person: { first_name: '', last_name: '', cpf_cnpj: '', identity_municipal_registration: '', dispatcher: '', birthday_date: '' },
+    address: { street: '', complement: '', neighborhood: '', city: '', state: '', zip_code: '' },
+    //people_attributes: [{ first_name: '', last_name: '', cpf_cnpj: '', identity_municipal_registration: '', dispatcher: '', birthday_date: '' }],
+    //addresses_attributes: [{ street: '', complement: '', neighborhood: '', city: '', state: '', zip_code: '' }],
+  });
+
+  const { register, handleSubmit, formState: {errors} } = useForm({
+    resolver: zodResolver(schema)
+  })
 
   const optionsTypeUser = [
-    { value: '', label: 'Selecione o Tipo de Usuário' },
+    { value: '', label: 'Selecione...' },
     { value: 'administrador', label: 'Administrador' },
     { value: 'proprietario', label: 'Proprietário' },
     { value: 'atendimento', label: 'Atendimento' },
   ];
   const defaultValue = '';
 
-  async function onSubmit(data) {
-    await handleLogin(data.email, data.password)
+  // const handleAddressChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setUserData({
+  //     ...userData,
+  //     address: {
+  //       ...userData.address,
+  //       [name]: value,
+  //     },
+  //   });
+  // };
+
+  const handleStateSelect = (selectedState) => {
+    console.log('Estado selecionado:', selectedState);
+    // Adicione a lógica para lidar com o estado selecionado, se necessário
+  };
+
+
+
+  function onSubmit() {
+    debugger
+    console.log('Claudiney Veloso')
   }
 
   return (
@@ -51,7 +123,7 @@ export default function UserForm() {
                   </div>
                   <div className="card-body">
                     <div className="">
-                      <form>
+                      <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="row">
                           <div className="col-md-6">
                             <div className="mb-3">
@@ -61,11 +133,11 @@ export default function UserForm() {
                                 className="form-control" 
                                 autoComplete="email-input"
                                 id="email-input" 
-                                {...register('email')}
+                                {...register('customer.email')}
                               />
-                            </div>
-                            <div className="invalid mt-1">
-                              {errors.email && <span>{errors.email.message}</span>}
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.customer?.email && <span>{errors?.customer?.email.message}</span>}
+                              </div>
                             </div>
                           </div>
                           <div className="col-md-6">
@@ -76,15 +148,38 @@ export default function UserForm() {
                                 className="form-control" 
                                 autoComplete="user-name-input"
                                 id="user-name-input" 
+                                {...register('customer.user_name')}
                               />
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.customer?.user_name && <span>{errors?.customer?.user_name.message}</span>}
+                              </div>
                             </div>
                           </div>
                         </div>
                         <div className="row">
                           <div className="col-md-6">
                             <div className="mb-3">
-                              <select 
+                              <label className="form-label" htmlFor="password-input">Senha</label>
+                              <input 
+                                type="password" 
+                                className="form-control" 
+                                autoComplete="password-input"
+                                id="password-input" 
+                                {...register('password')}
+                                {...register('customer.password')}
+                              />
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.customer?.password && <span>{errors?.customer?.password.message}</span>}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label className="form-label" htmlFor="user-type-select">Tipo de Usuário</label>
+                              <select  {...register('customer.user_type')}
                                 defaultValue={defaultValue} 
+                                id='user-type-select'
                                 className="form-select" 
                                 aria-label="Floating label select example"
                               >
@@ -94,22 +189,25 @@ export default function UserForm() {
                                   </option>
                                 ))}
                               </select>
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.customer?.user_type && <span>{errors?.customer?.user_type.message}</span>}
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <hr class="my-4" />
+                        <hr className="my-4" />
                         <div className="row">
                           <ul className="nav nav-tabs" role="tablist">
                             <li className="nav-item text-center">
-                              <a class="nav-link px-3 active" data-bs-toggle="tab" href="#person-data" role="tab" aria-selected="true">
-                                <i class="bx bx-user-circle font-size-20"></i>
-                                <span class="d-none d-sm-block">Dados Pessoais</span>
+                              <a className="nav-link px-3 active" data-bs-toggle="tab" href="#person-data" role="tab" aria-selected="true">
+                                <i className="bx bx-user-circle font-size-20"></i>
+                                <span className="d-none d-sm-block">Dados Pessoais</span>
                               </a>
                             </li>
                             <li className="nav-item text-center">
-                              <a class="nav-link px-3" data-bs-toggle="tab" href="#address" role="tab" aria-selected="false">
-                                <i class="bx bx-home-circle font-size-20"></i>
-                                <span class="d-none d-sm-block">Endereço</span>
+                              <a className="nav-link px-3" data-bs-toggle="tab" href="#address" role="tab" aria-selected="false">
+                                <i className="bx bx-home-circle font-size-20"></i>
+                                <span className="d-none d-sm-block">Endereço</span>
                               </a>
                             </li>
                           </ul>
@@ -125,7 +223,11 @@ export default function UserForm() {
                                       className="form-control" 
                                       autoComplete="first-name-input"
                                       id="first-name-input" 
+                                      {...register('person.first_name')}
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.person?.first_name && <span>{errors?.person?.first_name.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="col-md-6">
@@ -136,7 +238,11 @@ export default function UserForm() {
                                       className="form-control" 
                                       autoComplete="last-name-input"
                                       id="last-name-input" 
+                                      {...register('person.last_name')}
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.person?.last_name && <span>{errors?.person?.last_name.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -177,10 +283,15 @@ export default function UserForm() {
                                   <div className="mb-3">
                                     <label className="form-label" htmlFor="birthday-date-input">Data de Nascimento</label>
                                     <input 
-                                      type="text" 
+                                      type="date" 
                                       className="form-control" 
                                       autoComplete="birthday-date-input"
-                                      id="birthday-date-input" />
+                                      id="birthday-date-input" 
+                                      {...register('person.birthday_date')}
+                                    />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.person?.birthday_date && <span>{errors?.person?.birthday_date.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -197,7 +308,11 @@ export default function UserForm() {
                                       className="form-control" 
                                       autoComplete="street-input"
                                       id="street-input" 
+                                      {...register('address.street')}
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.address?.street && <span>{errors?.address?.street.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="col-md-6">
@@ -221,7 +336,11 @@ export default function UserForm() {
                                       className="form-control" 
                                       autoComplete="neighborhood-input"
                                       id="neighborhood-input" 
+                                      {...register('address.neighborhood')}
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.address?.neighborhood && <span>{errors?.address?.neighborhood.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="col-md-6">
@@ -232,7 +351,11 @@ export default function UserForm() {
                                       className="form-control"
                                       autoComplete="city-input"
                                       id="city-input"
+                                      {...register('address.city')}
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.address?.city && <span>{errors?.address?.city.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -240,12 +363,13 @@ export default function UserForm() {
                                 <div className="col-md-6">
                                   <div className="mb-3">
                                     <label className="form-label" htmlFor="state-input">Estado</label>
-                                    <input 
-                                      type="text" 
-                                      className="form-control" 
-                                      autoComplete="state-input"
-                                      id="state-input" 
+                                    <BrazilianStates 
+                                      onSelect={handleStateSelect} 
+                                      register={register} 
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.address?.state && <span>{errors?.address?.state.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="col-md-6">
@@ -256,7 +380,11 @@ export default function UserForm() {
                                       className="form-control"
                                       autoComplete="zip-code-input"
                                       id="zip-code-input"
+                                      {...register('address.zip_code')}
                                     />
+                                    <div className="invalid mt-1 ms-1">
+                                      {errors?.address?.zip_code && <span>{errors?.address?.zip_code.message}</span>}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -276,8 +404,8 @@ export default function UserForm() {
                             <button 
                               type="submit" 
                               className="btn btn-success" 
-                              data-bs-toggle='modal'
-                              data-bs-target="#success-btn" 
+                              //data-bs-toggle='modal'
+                              //data-bs-target="#success-btn" 
                               id="btn-save-event"
                             >
                               <i className="bx bx-check me-1 align-middle"></i> 

@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react"
 import ReactDOM from 'react-dom';
 import Image from "next/image"
-//import ReactPaginate from 'react-paginate';
 import Link from "next/link"
 import axios from "axios"
 import HeaderVertical from "@/app/components/headerVertical/page"
@@ -30,28 +29,15 @@ export default function Users() {
     const apiUrl = 'http://localhost:3001'
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/v1/users`);
+        const response = await axios.get(`${apiUrl}/api/v1/users/${searchUser}`);
         setUserData(response.data);
+        console.log('Endereço', response.data[0].addresses[0].city);
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
     }
     fetchData(); 
-  }, [])
-
-  useEffect(() => {
-    const apiUrl = 'http://localhost:3001'
-    const fetchDataSearch = async () => {
-      try {
-        const response = await axios.post(`${apiUrl}/api/v1/users/search/${searchUser}`);
-        setUserData(response.data);
-        setTotalPages(Math.ceil(response.data.length / itemsPerPage));
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-      }
-    }
-    fetchDataSearch(); 
   }, [searchUser])
 
   const startIndex = currentPage * itemsPerPage;
@@ -66,8 +52,15 @@ export default function Users() {
     setSearchUser(e.target.value);
   }
 
-  const handleEditModal = (data) => {
-
+  const backgroundColor = (user_type) => {
+    switch(user_type) {
+    case 'administrador':
+      return 'badge-soft-success';
+    case 'proprietario':  
+      return 'badge-soft-info';
+    default:
+      return 'badge-soft-warning';
+    }
   }
 
   const handleDelete = async (userId) => {
@@ -116,7 +109,6 @@ export default function Users() {
                               <Link 
                                 href='/pages/users/create'
                                 className="btn btn-success"
-                              
                               >
                                 <i className="mdi mdi-plus me-1"></i> Adicionar
                               </Link>
@@ -173,7 +165,7 @@ export default function Users() {
                                   <button tabIndex="-1" aria-label="Sort column ascending" title="Sort column ascending" className="gridjs-sort gridjs-sort-neutral"></button>
                                 </th>
                                 <th data-column-id="country" className="gridjs-th gridjs-th-sort" tabIndex="0" style={{minWidth: '113px', width: '170px'}}>
-                                  <div className="gridjs-th-content">Country</div>
+                                  <div className="gridjs-th-content">Endereço</div>
                                   <button tabIndex="-1" aria-label="Sort column ascending" title="Sort column ascending" className="gridjs-sort gridjs-sort-neutral"></button>
                                 </th>
                                 <th data-column-id="country" className="gridjs-th gridjs-th-sort" tabIndex="0" style={{minWidth: '100px', width: '100px'}}>
@@ -199,14 +191,15 @@ export default function Users() {
                                   </td>
                                   <td data-column-id="code" style={{ textTransform: 'capitalize'}}>
                                     <span>
-                                      <span className={`badge badge-pill badge-soft-success font-size-12`}>
+                                      <span className={`badge badge-pill ${backgroundColor(data.user_type)} font-size-12`}>
                                         {data.user_type}
                                       </span>
                                     </span>                                    
                                     
                                   </td>
                                   <td data-column-id="code">{data.id}</td>
-                                  <td data-column-id="code">{data.user_name}</td>
+                                  <td data-column-id="code">{data.addresses[0]?.street}</td>
+                                  
                                   <td data-column-id="viewDetails" className="gridjs-td">
                                     <span>
                                       <ul className="list-inline mb-0">

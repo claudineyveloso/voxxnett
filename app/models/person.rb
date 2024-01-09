@@ -9,9 +9,6 @@ class Person < ApplicationRecord
             length: { maximum: 100 },
             presence: true
 
-  validates :cpf_cnpj,
-            presence: true
-
   validates :birthday_date,
             presence: true
 

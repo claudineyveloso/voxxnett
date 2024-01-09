@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get 'users/index'
-
   devise_for :users, path: '', path_names: {
                                  sign_in: 'login',
                                  sign_out: 'logout',
@@ -15,11 +13,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :customers
-      resources :users, only: [:index] do
-        post 'search/:filter', to: 'users#search', on: :collection
-        # collection do
-        #   post 'search/:email', action: 'search', as: 'api/v1/users#search/:email'
-        # end
+      resources :users, only: %i[index show create update destroy] do
+        get '/:filter', to: 'users#index', on: :collection, as: :users_with_filter
+        collection do
+          post 'custom_create'
+        end
       end
     end
   end

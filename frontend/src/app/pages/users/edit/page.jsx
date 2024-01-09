@@ -424,6 +424,7 @@ export default function UserForm() {
                           </div>
                         </div>                                            
                       </form>
+                      <p>{JSON.stringify(userData)}</p>
                     </div>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import HeaderVertical from "@/app/components/headerVertical/page"
 import BrazilianStates from "@/app/components/brazilianStates";
 
-export default function UserForm() {
+export default function EditUserForm() {
 
   const userSchema = z.object({
     user_name: z.string().nonempty('Usuário não pode ficar vazio!'),

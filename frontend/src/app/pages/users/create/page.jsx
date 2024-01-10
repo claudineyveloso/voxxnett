@@ -3,10 +3,12 @@ import { useContext, useState } from "react"
 import { useRouter } from 'next/navigation'
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
+import { createUser } from "@/app/components/api/page";
 import Link from "next/link"
 import { useForm } from 'react-hook-form';
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
+import Swal from 'sweetalert2';
 import HeaderVertical from "@/app/components/headerVertical/page"
 import BrazilianStates from "@/app/components/brazilianStates";
 
@@ -98,23 +100,33 @@ export default function UserForm() {
       }
     }
     setUserData(objectState)
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('voxxNettUseToken')}`,
-      },
-    };
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${localStorage.getItem('voxxNettUseToken')}`,
+    //   },
+    // };
     //debugger
     console.log('Claudiney Veloso', objectState)
-    const apiUrl = 'http://localhost:3001'
-    axios.post(`${apiUrl}/api/v1/users/custom_create`, JSON.stringify(objectState), config)
+    //const apiUrl = 'http://localhost:3001'
+    await createUser(objectState, localStorage.getItem('voxxNettUseToken'))
+    //axios.post(`${apiUrl}/api/v1/users/custom_create`, JSON.stringify(objectState), config)
       .then(response => {
         console.log('Response:', response.data);
-        router.push('/pages/users')
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuário cadastrado com sucesso!',
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(() => {
+          // Redirecione para a listagem de usuários
+          router.push('/pages/users')
+    });
+        
       })
       .catch(error => {
         console.error('Erro:', error);
-        // Trate o erro conforme necessário
+        router.push('/pages/error')
       });
   }
 

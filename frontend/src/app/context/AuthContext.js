@@ -2,10 +2,7 @@
 import React,  { createContext, useState, useEffect }  from "react";
 import { useRouter } from 'next/navigation'
 import axios from 'axios';
-import api from "../components/api";
-//import { redirect } from "next/dist/server/api-utils";
-
-//import history from '../components/history';
+import { api, login } from "../components/api/page";
 
 const AuthContext = createContext();
 
@@ -27,31 +24,25 @@ function AuthProvider ({ children }) {
   }, [])
 
   async function handleLogin(email, password) {
-    const apiUrl = 'http://localhost:3001'
-    const response = await axios.post(`${apiUrl}/login`, { "user": { "email": email, "password": password }  })
-     .then((response) => {
+    const response = await login(email, password)
+    if(response) {
       const token = response.data.token
       setInfoUser({
         email: response.data.status.data.user.email,
-        user_name: response.data.status.data.user.user_name
+        user_name: response.data.status.data.user.user_name,
+        user_type: response.data.status.data.user.user_type,
       })
       localStorage.setItem('voxxNettUseToken', JSON.stringify(token));
-      api.defaults.headers.Authorization = `Bearer ${token}`;
-      console.log('Valor de response em AuthContext.js', response.data)
-      router.push('/');
-     }).catch(function(err) {
-      console.log('Apresentação do erro', err);
-      return err;
-     })
-  }
 
+      router.push('/');
+    }
+  }
 
   const handleLogout = () => {
     setAuthenticated(false);
     localStorage.removeItem('voxxNettUseToken');
     api.defaults.headers.Authorization = undefined;
   }
-
 
   return (
     <AuthContext.Provider value={{ authenticated, loading, infoUser, handleLogin, handleLogout }}>

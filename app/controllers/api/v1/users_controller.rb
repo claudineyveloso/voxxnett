@@ -7,7 +7,8 @@ module Api
       before_action :set_user, only: %i[show update destroy]
 
       def index
-        users = params[:filter].nil? ? User.where(is_active: true).all.order(email: :asc) : User.where('email ILIKE ?', "%#{params[:filter]}%").where(is_active: true).order(email: :asc)
+        # binding.break
+        users = params[:filter].nil? ? User.where(is_active: true).all.order(email: :asc) : User.where('email ILIKE ?', "%#{params[:filter]}%").order(email: :asc)
         # users = User.all.order(email: :asc)
         render json: users, each_serializer: UserSerializer
       end

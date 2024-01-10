@@ -3,9 +3,10 @@ import { useState, useEffect } from "react"
 import ReactDOM from 'react-dom';
 import Image from "next/image"
 import Link from "next/link"
-import axios from "axios"
+import { getUsers, deleteUser } from "@/app/components/api/page";
 import HeaderVertical from "@/app/components/headerVertical/page"
 import Pagination from "@/app/components/pagination/page";
+import Errors from "../errors/page";
 const Avatar = require("../../assets/images/male.png")
 import Swal from 'sweetalert2';
 
@@ -16,6 +17,7 @@ export default function Users() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);  
   const [searchUser, setSearchUser] = useState('');
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 10;
   const optionsTypeUser = [
     { value: '', label: 'Selecione o Tipo de Usuário' },
@@ -26,19 +28,17 @@ export default function Users() {
   const defaultValue = '';
 
   useEffect(() => {
-    const apiUrl = 'http://localhost:3001'
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/v1/users/${searchUser}`);
+        const response = await getUsers(searchUser) 
         setUserData(response.data);
-        console.log('Endereço', response.data[0].addresses[0].city);
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
     }
     fetchData(); 
-  }, [searchUser])
+  }, [searchUser, loading])
 
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -83,6 +83,15 @@ export default function Users() {
 
   const removeUser =  async (userID) => {
     await console.log('Valor do Id do usuário para ser deletado',userID)
+    const response = await deleteUser(userID)
+      .then(response => {
+        console.log('Response:', response.data);
+        setLoading(true);
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        return <Errors props={error.message} />
+      });
   }
   
   return (

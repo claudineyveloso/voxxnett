@@ -1,13 +1,12 @@
 
 export default function Errors(props) {
-  const estiloDoFundo = {
+  const backgroundStyle = {
     background: `url(./assets/images/bg-1.png)`,
-    // Adicione outras propriedades de estilo conforme necessário
   };
 
   return (
     <>
-      <div class="authentication-bg min-vh-100" style={estiloDoFundo}>
+      <div class="authentication-bg min-vh-100" style={backgroundStyle}>
         <div class="bg-overlay bg-light"></div>
         <div class="container">
           <div class="row">

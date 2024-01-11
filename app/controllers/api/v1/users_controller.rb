@@ -33,6 +33,7 @@ module Api
       end
 
       def update
+        # binding.break
         user = User.find(params[:id])
         if user.update!(user_params)
           render json: {

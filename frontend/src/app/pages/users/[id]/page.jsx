@@ -27,6 +27,7 @@ export default function EditUser() {
   });
 
   const personSchema = z.object({
+    id: z.string().optional(true),
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
     cpf_cnpj: z.string().optional(true),
@@ -36,6 +37,7 @@ export default function EditUser() {
   });
 
   const addressSchema = z.object({
+    id: z.string().optional(true),
     street: z.string().nonempty('Logradouro não pode ficar vazio!'),
     neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
     city: z.string().nonempty('Cidade não pode ficar vazio!'),
@@ -104,7 +106,7 @@ export default function EditUser() {
           person: {},
           address: {}
         };
-        debugger;
+        //debugger;
         console.log(
           'data formatada',
           moment
@@ -114,6 +116,7 @@ export default function EditUser() {
         defaultValues.user.user_name = response.data?.user_name;
         defaultValues.user.email = response.data?.email;
         defaultValues.user.user_type = response.data?.user_type;
+        //defaultValues.person.id = response.data.people[0]?.id;
         defaultValues.person.first_name = response.data.people[0]?.first_name;
         defaultValues.person.last_name = response.data.people[0]?.last_name;
         defaultValues.person.cpf_cnpj = response.data.people[0]?.cpf_cnpj;
@@ -123,6 +126,7 @@ export default function EditUser() {
         defaultValues.person.birthday_date = moment
           .utc(response.data.people[0]?.birthday_date)
           .format('YYYY-MM-DD');
+        //defaultValues.address.id = response.data.addresses[0]?.id;
         defaultValues.address.street = response.data.addresses[0]?.street;
         defaultValues.address.complement =
           response.data.addresses[0]?.complement;
@@ -153,7 +157,7 @@ export default function EditUser() {
   };
 
   const onSubmit = async (data) => {
-    debugger;
+    //debugger;
     const objectState = {
       user: {
         email: data.user.email,
@@ -162,6 +166,7 @@ export default function EditUser() {
         //password: data.user.password,
         people_attributes: [
           {
+            id: 1,
             first_name: data.person.first_name,
             last_name: data.person.last_name,
             cpf_cnpj: data.person.cpf_cnpj,
@@ -173,6 +178,7 @@ export default function EditUser() {
         ],
         addresses_attributes: [
           {
+            id: 1,
             street: data.address.street,
             complement: data.address.complement,
             neighborhood: data.address.neighborhood,

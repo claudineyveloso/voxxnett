@@ -31,6 +31,8 @@ export default function EditUser() {
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
     cpf_cnpj: z.string().optional(true),
+    identity: z.string().optional(true),
+    dispatcher: z.string().optional(true),
     birthday_date: z
       .string()
       .nonempty('A data de aniversário não pode ficar vazio!')
@@ -62,7 +64,7 @@ export default function EditUser() {
           first_name: '',
           last_name: '',
           cpf_cnpj: '',
-          identity_municipal_registration: '',
+          identity: '',
           dispatcher: '',
           birthday_date: ''
         }
@@ -81,6 +83,8 @@ export default function EditUser() {
   });
   const router = useRouter();
   const params = useParams();
+  const [peopleId, setPeopleId] = useState(0);
+  const [AddressId, setAddressId] = useState(0);
 
   console.log('Dados do usuario', userData);
 
@@ -106,13 +110,15 @@ export default function EditUser() {
           person: {},
           address: {}
         };
-        //debugger;
+        debugger;
         console.log(
           'data formatada',
           moment
             .utc(response.data.people[0]?.birthday_date)
             .format('DD/MM/YYYY')
         );
+        setPeopleId(response.data.people[0]?.id);
+        setAddressId(response.data.addresses[0]?.id);
         defaultValues.user.user_name = response.data?.user_name;
         defaultValues.user.email = response.data?.email;
         defaultValues.user.user_type = response.data?.user_type;
@@ -120,7 +126,7 @@ export default function EditUser() {
         defaultValues.person.first_name = response.data.people[0]?.first_name;
         defaultValues.person.last_name = response.data.people[0]?.last_name;
         defaultValues.person.cpf_cnpj = response.data.people[0]?.cpf_cnpj;
-        defaultValues.person.identity_municipal_registration =
+        defaultValues.person.identity =
           response.data.people[0]?.identity_municipal_registration;
         defaultValues.person.dispatcher = response.data.people[0]?.dispatcher;
         defaultValues.person.birthday_date = moment
@@ -157,7 +163,7 @@ export default function EditUser() {
   };
 
   const onSubmit = async (data) => {
-    //debugger;
+    debugger;
     const objectState = {
       user: {
         email: data.user.email,
@@ -166,19 +172,18 @@ export default function EditUser() {
         //password: data.user.password,
         people_attributes: [
           {
-            id: 1,
+            id: peopleId,
             first_name: data.person.first_name,
             last_name: data.person.last_name,
             cpf_cnpj: data.person.cpf_cnpj,
-            identity_municipal_registration:
-              data.person.identity_municipal_registration,
+            identity_municipal_registration: data.person.identity,
             dispatcher: data.person.dispatcher,
             birthday_date: data.person.birthday_date
           }
         ],
         addresses_attributes: [
           {
-            id: 1,
+            id: AddressId,
             street: data.address.street,
             complement: data.address.complement,
             neighborhood: data.address.neighborhood,
@@ -432,7 +437,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="identity-input"
                                       id="identity-input"
-                                      name="person.identity"
+                                      {...register('person.identity')}
                                     />
                                   </div>
                                 </div>
@@ -451,7 +456,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="dispatcher-input"
                                       id="dispatcher-input"
-                                      name="person.dispatcher"
+                                      {...register('person.dispatcher')}
                                     />
                                   </div>
                                 </div>

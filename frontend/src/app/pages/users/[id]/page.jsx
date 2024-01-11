@@ -29,6 +29,7 @@ export default function EditUser() {
   const personSchema = z.object({
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
+    cpf_cnpj: z.string().optional(true),
     birthday_date: z
       .string()
       .nonempty('A data de aniversário não pode ficar vazio!')
@@ -103,7 +104,7 @@ export default function EditUser() {
           person: {},
           address: {}
         };
-        //debugger;
+        debugger;
         console.log(
           'data formatada',
           moment
@@ -115,7 +116,7 @@ export default function EditUser() {
         defaultValues.user.user_type = response.data?.user_type;
         defaultValues.person.first_name = response.data.people[0]?.first_name;
         defaultValues.person.last_name = response.data.people[0]?.last_name;
-        defaultValues.person.cpf = response.data.people[0]?.cpf;
+        defaultValues.person.cpf_cnpj = response.data.people[0]?.cpf_cnpj;
         defaultValues.person.identity_municipal_registration =
           response.data.people[0]?.identity_municipal_registration;
         defaultValues.person.dispatcher = response.data.people[0]?.dispatcher;
@@ -163,7 +164,7 @@ export default function EditUser() {
           {
             first_name: data.person.first_name,
             last_name: data.person.last_name,
-            cpf_cnpj: data.person.cpf,
+            cpf_cnpj: data.person.cpf_cnpj,
             identity_municipal_registration:
               data.person.identity_municipal_registration,
             dispatcher: data.person.dispatcher,
@@ -408,6 +409,7 @@ export default function EditUser() {
                                       autoComplete="cpf-input"
                                       id="cpf-input"
                                       name="person.cpf"
+                                      {...register('person.cpf_cnpj')}
                                     />
                                   </div>
                                 </div>

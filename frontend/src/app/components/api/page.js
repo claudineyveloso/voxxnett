@@ -77,6 +77,35 @@ export const createUser = async (objectUser, token) => {
       return err;
     });
 };
+//api/v1/users/40/edit
+
+export const editUser = async (id, token) => {
+  return await api
+    .get(`/api/v1/users/${id}/edit`, {
+      Authorization: `Bearer ${token}`
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao editar um usuário', err);
+      return err;
+    });
+};
+
+export const updateUser = async (id, objectUser, token) => {
+  return await api
+    .put(`/api/v1/users/${id}`, JSON.stringify(objectUser), {
+      Authorization: `Bearer ${token}`
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao atulizar um usuário', err);
+      return err;
+    });
+};
 
 // const response = await axios.post(`${apiUrl}/login`, { "user": { "email": email, "password": password }  })
 //  .then((response) => {

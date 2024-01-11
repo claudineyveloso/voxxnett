@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :customers
-      resources :users, only: %i[index show create update destroy] do
+      resources :users, only: %i[index show edit create update destroy] do
         get '/:filter', to: 'users#index', on: :collection, as: :users_with_filter
         collection do
           post 'custom_create'

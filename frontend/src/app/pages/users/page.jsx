@@ -311,7 +311,7 @@ export default function Users() {
                                             <ul className="list-inline mb-0">
                                               <li className="list-inline-item">
                                                 <Link
-                                                  href={`/pages/users/edit/${data.id}`}
+                                                  href={`/pages/users/${data.id}`}
                                                   data-bs-toggle="tooltip"
                                                   data-bs-placement="top"
                                                   title=""

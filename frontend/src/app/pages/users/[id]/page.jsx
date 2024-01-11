@@ -1,13 +1,14 @@
 'use client';
-import { useContext, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { AuthContext } from '../../../../context/AuthContext';
-import { createUser } from '@/app/components/api/page';
+import { useContext, useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { AuthContext } from '../../../context/AuthContext';
+import { editUser, updateUser } from '@/app/components/api/page';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2';
+import moment from 'moment';
 import HeaderVertical from '@/app/components/headerVertical/page';
 import BrazilianStates from '@/app/components/brazilianStates';
 
@@ -15,10 +16,6 @@ export default function EditUser() {
   const userSchema = z.object({
     user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
     email: z.string().email('Informe um endereço de e-mail válido!'),
-    password: z
-      .string()
-      .nonempty('A senha é obrigatória')
-      .min(8, 'A senha deve ter no mínimo 8 caracteres.'),
     user_type: z.string().refine(
       (valor) => {
         return valor.trim() !== '';
@@ -29,12 +26,6 @@ export default function EditUser() {
     )
   });
 
-  const router = useRouter();
-  debugger;
-  //const userId = router.query;
-  //const { id } = router.query;
-  const { query, isReady } = router;
-  //const { id } = query;
   const personSchema = z.object({
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
@@ -63,7 +54,6 @@ export default function EditUser() {
       user_name: '',
       email: '',
       user_type: '',
-      password: '',
       people_attributes: [
         {
           first_name: '',
@@ -86,14 +76,67 @@ export default function EditUser() {
       ]
     }
   });
+  const router = useRouter();
+  const params = useParams();
+
+  console.log('Dados do usuario', userData);
 
   const {
+    reset,
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm({
     resolver: zodResolver(schema)
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await editUser(
+          params.id,
+          localStorage.getItem('voxxNettUseToken')
+        );
+        let defaultValues = {
+          user: {},
+          person: {},
+          address: {}
+        };
+        //debugger;
+        console.log(
+          'data formatada',
+          moment
+            .utc(response.data.people[0]?.birthday_date)
+            .format('DD/MM/YYYY')
+        );
+        defaultValues.user.user_name = response.data?.user_name;
+        defaultValues.user.email = response.data?.email;
+        defaultValues.user.user_type = response.data?.user_type;
+        defaultValues.person.first_name = response.data.people[0]?.first_name;
+        defaultValues.person.last_name = response.data.people[0]?.last_name;
+        defaultValues.person.cpf = response.data.people[0]?.cpf;
+        defaultValues.person.identity_municipal_registration =
+          response.data.people[0]?.identity_municipal_registration;
+        defaultValues.person.dispatcher = response.data.people[0]?.dispatcher;
+        defaultValues.person.birthday_date = moment
+          .utc(response.data.people[0]?.birthday_date)
+          .format('YYYY-MM-DD');
+        defaultValues.address.street = response.data.addresses[0]?.street;
+        defaultValues.address.complement =
+          response.data.addresses[0]?.complement;
+        defaultValues.address.neighborhood =
+          response.data.addresses[0]?.neighborhood;
+        defaultValues.address.city = response.data.addresses[0]?.city;
+        defaultValues.address.state = response.data.addresses[0]?.state;
+        defaultValues.address.zip_code = response.data.addresses[0]?.zip_code;
+        reset({ ...defaultValues });
+      } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+      }
+    };
+    fetchData();
+  }, [setValue, params.id, reset]);
 
   const optionsTypeUser = [
     { value: '', label: 'Selecione...' },
@@ -109,17 +152,18 @@ export default function EditUser() {
   };
 
   const onSubmit = async (data) => {
+    debugger;
     const objectState = {
       user: {
         email: data.user.email,
         user_name: data.user.user_name,
         user_type: data.user.user_type,
-        password: data.user.password,
+        //password: data.user.password,
         people_attributes: [
           {
             first_name: data.person.first_name,
             last_name: data.person.last_name,
-            cpf_cnpj: data.person.cpf_cnpj,
+            cpf_cnpj: data.person.cpf,
             identity_municipal_registration:
               data.person.identity_municipal_registration,
             dispatcher: data.person.dispatcher,
@@ -139,22 +183,18 @@ export default function EditUser() {
       }
     };
     setUserData(objectState);
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${localStorage.getItem('voxxNettUseToken')}`,
-    //   },
-    // };
-    //debugger
+    //debugger;
     console.log('Claudiney Veloso', objectState);
-    //const apiUrl = 'http://localhost:3001'
-    await createUser(objectState, localStorage.getItem('voxxNettUseToken'))
-      //axios.post(`${apiUrl}/api/v1/users/custom_create`, JSON.stringify(objectState), config)
+    await updateUser(
+      params.id,
+      objectState,
+      localStorage.getItem('voxxNettUseToken')
+    )
       .then((response) => {
         console.log('Response:', response.data);
         Swal.fire({
           icon: 'success',
-          title: 'Usuário cadastrado com sucesso!',
+          title: 'Usuário atualizado com sucesso!',
           showConfirmButton: false,
           timer: 1500
         }).then(() => {
@@ -232,29 +272,6 @@ export default function EditUser() {
                           </div>
                         </div>
                         <div className="row">
-                          <div className="col-md-6">
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="password-input"
-                              >
-                                Senha
-                              </label>
-                              <input
-                                type="password"
-                                className="form-control"
-                                autoComplete="password-input"
-                                id="password-input"
-                                {...register('user.password')}
-                              />
-                              <div className="invalid mt-1 ms-1">
-                                {errors?.user?.password && (
-                                  <span>{errors?.user?.password.message}</span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
                           <div className="col-md-6">
                             <div className="mb-3">
                               <label
@@ -390,6 +407,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="cpf-input"
                                       id="cpf-input"
+                                      name="person.cpf"
                                     />
                                   </div>
                                 </div>
@@ -406,6 +424,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="identity-input"
                                       id="identity-input"
+                                      name="person.identity"
                                     />
                                   </div>
                                 </div>
@@ -424,6 +443,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="dispatcher-input"
                                       id="dispatcher-input"
+                                      name="person.dispatcher"
                                     />
                                   </div>
                                 </div>
@@ -501,6 +521,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="complement-input"
                                       id="complement-input"
+                                      name="address.complement"
                                     />
                                   </div>
                                 </div>

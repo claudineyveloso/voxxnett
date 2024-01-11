@@ -18,7 +18,7 @@ module Api
         user = User.create!(user_params)
         if user
           render json: {
-            status: { code: 200, message: 'Signed up successfully.' }
+            status: { code: 200, message: 'Registered with successfully.' }
           }
         else
           render json: {
@@ -27,13 +27,21 @@ module Api
         end
       end
 
-      def edit; end
+      def edit
+        user = User.find(params[:id])
+        render json: user, each_serializer: UserSerializer
+      end
 
       def update
-        if @user.update(user_params)
-          render json: @user
+        user = User.find(params[:id])
+        if user.update!(user_params)
+          render json: {
+            status: { code: 200, message: 'Updated with successfully..' }
+          }
         else
-          render json: @user.errors, status: :unprocessable_entity
+          render json: {
+            status: { code: 400, message: 'Unprocessable entity.' }
+          }
         end
       end
 
@@ -62,9 +70,7 @@ module Api
                                      addresses_attributes: %i[id street complement neighborhood city state zip_code])
 
         # customer_ids: [],
-        # terminal_ids: [],
-        # people_attributes: %i[id first_name last_name cpf_cnpj state_registration_identity dispatcher_organ],
-        # addresses_attributes: %i[id description number_address complement neighborhood city state zip_code])
+        # terminal_ids: []
       end
     end
   end

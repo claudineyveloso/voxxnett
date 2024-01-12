@@ -12,7 +12,10 @@ Rails.application.routes.draw do
                      }
   namespace :api do
     namespace :v1 do
-      resources :customers
+      resources :customers, only: %i[index show edit create update destroy] do
+        get '/:filter', to: 'customers#index', on: :collection, as: :customers_with_filter
+      end
+
       resources :users, only: %i[index show edit create update destroy] do
         get '/:filter', to: 'users#index', on: :collection, as: :users_with_filter
         collection do

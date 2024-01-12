@@ -41,6 +41,7 @@ export default function EditUser() {
   const addressSchema = z.object({
     id: z.string().optional(true),
     street: z.string().nonempty('Logradouro não pode ficar vazio!'),
+    complement: z.string().optional(true),
     neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
     city: z.string().nonempty('Cidade não pode ficar vazio!'),
     state: z.string().nonempty('Estado não pode ficar vazio!'),
@@ -122,7 +123,6 @@ export default function EditUser() {
         defaultValues.user.user_name = response.data?.user_name;
         defaultValues.user.email = response.data?.email;
         defaultValues.user.user_type = response.data?.user_type;
-        //defaultValues.person.id = response.data.people[0]?.id;
         defaultValues.person.first_name = response.data.people[0]?.first_name;
         defaultValues.person.last_name = response.data.people[0]?.last_name;
         defaultValues.person.cpf_cnpj = response.data.people[0]?.cpf_cnpj;
@@ -132,7 +132,6 @@ export default function EditUser() {
         defaultValues.person.birthday_date = moment
           .utc(response.data.people[0]?.birthday_date)
           .format('YYYY-MM-DD');
-        //defaultValues.address.id = response.data.addresses[0]?.id;
         defaultValues.address.street = response.data.addresses[0]?.street;
         defaultValues.address.complement =
           response.data.addresses[0]?.complement;
@@ -534,7 +533,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="complement-input"
                                       id="complement-input"
-                                      name="address.complement"
+                                      {...register('address.complement')}
                                     />
                                   </div>
                                 </div>

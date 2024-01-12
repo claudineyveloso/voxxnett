@@ -107,6 +107,18 @@ export const updateUser = async (id, objectUser, token) => {
     });
 };
 
+export const getCustomers = async (searchCustomer) => {
+  return await api
+    .get(`/api/v1/customers/${searchCustomer}`)
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao carregar todos os clientes', err);
+      return err;
+    });
+};
+
 // const response = await axios.post(`${apiUrl}/login`, { "user": { "email": email, "password": password }  })
 //  .then((response) => {
 //   const token = response.data.token

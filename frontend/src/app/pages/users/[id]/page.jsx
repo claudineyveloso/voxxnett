@@ -111,7 +111,7 @@ export default function EditUser() {
           person: {},
           address: {}
         };
-        debugger;
+
         console.log(
           'data formatada',
           moment
@@ -162,7 +162,6 @@ export default function EditUser() {
   };
 
   const onSubmit = async (data) => {
-    debugger;
     const objectState = {
       user: {
         email: data.user.email,
@@ -194,7 +193,7 @@ export default function EditUser() {
       }
     };
     setUserData(objectState);
-    //debugger;
+
     console.log('Claudiney Veloso', objectState);
     await updateUser(
       params.id,
@@ -231,7 +230,7 @@ export default function EditUser() {
               <div className="col-lg-12">
                 <div className="card">
                   <div className="card-header">
-                    <h4 className="card-title mb-0">Cadastro de usuários</h4>
+                    <h4 className="card-title mb-0">Dados do usuários</h4>
                   </div>
                   <div className="card-body">
                     <div className="">

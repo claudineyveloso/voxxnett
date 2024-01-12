@@ -40,6 +40,10 @@ export const login = async (email, password) => {
     });
 };
 
+//************************************************************************************************
+// Endpoint Users
+//************************************************************************************************
+
 export const getUsers = async (searchUser) => {
   return await api
     .get(`/api/v1/users/${searchUser}`)
@@ -107,6 +111,10 @@ export const updateUser = async (id, objectUser, token) => {
     });
 };
 
+//************************************************************************************************
+// Endpoint Customers
+//************************************************************************************************
+
 export const getCustomers = async (searchCustomer) => {
   return await api
     .get(`/api/v1/customers/${searchCustomer}`)
@@ -115,6 +123,61 @@ export const getCustomers = async (searchCustomer) => {
     })
     .catch((err) => {
       console.log('Erro ao carregar todos os clientes', err);
+      return err;
+    });
+};
+
+export const deleteCustomer = async (id) => {
+  return await api
+    .delete(`/api/v1/customers/${id}`)
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao deletar um usuário', err);
+      return err;
+    });
+};
+
+export const createCustomer = async (objectUser, token) => {
+  return await api
+    .post(`/api/v1/customers/custom_create`, JSON.stringify(objectUser), {
+      Authorization: `Bearer ${token}`
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao criar um cliente', err);
+      return err;
+    });
+};
+//api/v1/users/40/edit
+
+export const editCustomer = async (id, token) => {
+  return await api
+    .get(`/api/v1/customers/${id}/edit`, {
+      Authorization: `Bearer ${token}`
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao editar um cliente', err);
+      return err;
+    });
+};
+
+export const updateCustomer = async (id, objectUser, token) => {
+  return await api
+    .put(`/api/v1/customers /${id}`, JSON.stringify(objectUser), {
+      Authorization: `Bearer ${token}`
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log('Erro ao atulizar um cliente', err);
       return err;
     });
 };

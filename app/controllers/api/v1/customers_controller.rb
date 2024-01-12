@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    # CustomersController
+    # CustomersControll er
     class CustomersController < ApplicationController
       def index
         customers = if params[:filter].nil?

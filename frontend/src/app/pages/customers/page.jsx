@@ -22,6 +22,7 @@ export default function Customers() {
       try {
         const response = await getCustomers(searchCustomer);
         setCustomerData(response.data);
+        debugger;
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
       } catch (error) {
         console.error('Erro ao buscar os dados do cliente:', error);

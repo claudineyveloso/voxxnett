@@ -29,11 +29,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_153205) do
   end
 
   create_table "customers", force: :cascade do |t|
-    t.string "people_type", limit: 20
+    t.string "people_type", limit: 20, null: false
     t.string "phone", limit: 15
     t.string "cell_phone", limit: 15
     t.text "observation"
-    t.string "email", limit: 100
+    t.string "email", limit: 100, null: false
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

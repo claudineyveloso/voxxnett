@@ -16,11 +16,9 @@ Rails.application.routes.draw do
         get '/:filter', to: 'customers#index', on: :collection, as: :customers_with_filter
       end
 
-      resources :users, only: %i[index show edit create update destroy] do
+      resources :users, only: %i[index show edit update destroy] do
         get '/:filter', to: 'users#index', on: :collection, as: :users_with_filter
-        collection do
-          post 'custom_create'
-        end
+        post 'custom_create', to: 'users#custom_create', on: :collection
       end
     end
   end

@@ -141,7 +141,7 @@ export const deleteCustomer = async (id) => {
 
 export const createCustomer = async (objectUser, token) => {
   return await api
-    .post(`/api/v1/customers/custom_create`, JSON.stringify(objectUser), {
+    .post(`/api/v1/customers`, JSON.stringify(objectUser), {
       Authorization: `Bearer ${token}`
     })
     .then((response) => {

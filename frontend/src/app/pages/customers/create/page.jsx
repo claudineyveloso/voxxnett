@@ -1,5 +1,5 @@
 'use client';
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '../../../context/AuthContext';
 import { createCustomer } from '@/app/components/api/page';
@@ -33,6 +33,9 @@ export default function CustomerForm() {
   const personSchema = z.object({
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
+    cpf: z.string().optional(true),
+    identity: z.string().optional(true),
+    dispatcher: z.string().optional(true),
     birthday_date: z
       .string()
       .nonempty('A data de aniversário não pode ficar vazio!')
@@ -40,6 +43,7 @@ export default function CustomerForm() {
 
   const addressSchema = z.object({
     street: z.string().nonempty('Logradouro não pode ficar vazio!'),
+    complement: z.string().optional(true),
     neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
     city: z.string().nonempty('Cidade não pode ficar vazio!'),
     state: z.string().nonempty('Estado não pode ficar vazio!'),
@@ -53,36 +57,47 @@ export default function CustomerForm() {
   });
 
   const { authenticated, handleLogin } = useContext(AuthContext);
-  const [customerData, setCustomerData] = useState({
-    customer: {
-      people_type: '',
-      phone: '',
-      cell_phone: '',
-      observation: '',
-      email: '',
-      active: '',
-      people_attributes: [
-        {
-          first_name: '',
-          last_name: '',
-          cpf_cnpj: '',
-          identity_municipal_registration: '',
-          dispatcher: '',
-          birthday_date: ''
-        }
-      ],
-      addresses_attributes: [
-        {
-          street: '',
-          complement: '',
-          neighborhood: '',
-          city: '',
-          state: '',
-          zip_code: ''
-        }
-      ]
-    }
-  });
+
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerCellPhone, setCustomerCellPhone] = useState('');
+
+  const firstName = useRef();
+  const lastName = useRef();
+  const cpf = useRef();
+  const identity = useRef();
+  const dispatcher = useRef();
+  const birthday = useRef();
+
+  // const [customerData, setCustomerData] = useState({
+  //   customer: {
+  //     people_type: '',
+  //     phone: '',
+  //     cell_phone: '',
+  //     observation: '',
+  //     email: '',
+  //     active: '',
+  //     people_attributes: [
+  //       {
+  //         first_name: '',
+  //         last_name: '',
+  //         cpf: '',
+  //         identity: '',
+  //         dispatcher: '',
+  //         birthday_date: ''
+  //       }
+  //     ],
+  //     addresses_attributes: [
+  //       {
+  //         street: '',
+  //         complement: '',
+  //         neighborhood: '',
+  //         city: '',
+  //         state: '',
+  //         zip_code: ''
+  //       }
+  //     ]
+  //   }
+  // });
 
   const {
     register,
@@ -117,9 +132,8 @@ export default function CustomerForm() {
           {
             first_name: data.person.first_name,
             last_name: data.person.last_name,
-            cpf_cnpj: data.person.cpf_cnpj,
-            identity_municipal_registration:
-              data.person.identity_municipal_registration,
+            cpf_cnpj: data.person.cpf,
+            identity_municipal_registration: data.person.identity,
             dispatcher: data.person.dispatcher,
             birthday_date: data.person.birthday_date
           }
@@ -136,7 +150,7 @@ export default function CustomerForm() {
         ]
       }
     };
-    setCustomerData(objectState);
+    //setCustomerData(objectState);
     //debugger
     console.log('Claudiney Veloso', objectState);
     //const apiUrl = 'http://localhost:3001'
@@ -158,6 +172,49 @@ export default function CustomerForm() {
         console.error('Erro:', error);
         router.push('/pages/error');
       });
+  };
+
+  const handlePhoneMask = (event) => {
+    let inputValue = event.target.value;
+    let lengthInput = 0;
+    event.target.name === 'customer.phone'
+      ? (lengthInput = 9)
+      : (lengthInput = 10);
+
+    inputValue = inputValue.replace(/\D/g, '');
+    if (inputValue.length >= 2) {
+      inputValue = `(${inputValue.substring(0, 2)}) ${inputValue.substring(2)}`;
+    }
+    if (inputValue.length >= lengthInput) {
+      inputValue = `${inputValue.substring(
+        0,
+        lengthInput
+      )}-${inputValue.substring(lengthInput)}`;
+    }
+    event.target.name === 'customer.phone'
+      ? setCustomerPhone(inputValue)
+      : setCustomerCellPhone(inputValue);
+  };
+
+  const handlePeopleTypeChange = (type) => {
+    switch (type) {
+      case 'fisica':
+        firstName.current.textContent = 'Nome';
+        lastName.current.textContent = 'Sobrenome';
+        cpf.current.textContent = 'CPF';
+        identity.current.textContent = 'Identidade';
+        dispatcher.current.textContent = 'Orgão Emissor';
+        birthday.current.textContent = 'Data de Nascimento';
+        break;
+      case 'juridica':
+        firstName.current.textContent = 'Razão Social';
+        lastName.current.textContent = 'Nome Fantasia';
+        cpf.current.textContent = 'CNPJ';
+        identity.current.textContent = 'Inscrição Estadual';
+        dispatcher.current.textContent = 'Orgão Emissor';
+        birthday.current.textContent = 'Data da Fundação';
+        break;
+    }
   };
 
   return (
@@ -192,6 +249,9 @@ export default function CustomerForm() {
                                 id="people-type-select"
                                 className="form-select"
                                 aria-label="Floating label select example"
+                                onChange={(e) =>
+                                  handlePeopleTypeChange(e.target.value)
+                                }
                               >
                                 {optionsPeopleType.map((option) => (
                                   <option
@@ -223,8 +283,12 @@ export default function CustomerForm() {
                                 type="text"
                                 className="form-control"
                                 autoComplete="phone-input"
+                                placeholder="(DDD) 1234-5678"
+                                maxLength={14}
                                 id="phone-input"
                                 {...register('customer.phone')}
+                                onChange={handlePhoneMask}
+                                value={customerPhone}
                               />
                             </div>
                           </div>
@@ -242,8 +306,12 @@ export default function CustomerForm() {
                                 type="text"
                                 className="form-control"
                                 autoComplete="cell-phone-input"
+                                placeholder="(DDD) 99999-9999"
+                                maxLength={15}
                                 id="cell-phone-input"
                                 {...register('customer.cell_phone')}
+                                onChange={handlePhoneMask}
+                                value={customerCellPhone}
                               />
                             </div>
                           </div>
@@ -284,8 +352,10 @@ export default function CustomerForm() {
                                 className="form-control"
                                 autoComplete="observation-input"
                                 id="observation-input"
-                                {...register('customer.observation')}
+                                rows={4}
+                                cols={40}
                                 style={{ height: '150px' }}
+                                {...register('customer.observation')}
                               />
                             </div>
                           </div>
@@ -335,7 +405,8 @@ export default function CustomerForm() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="first-name-input"
+                                      htmlFor="firstName"
+                                      ref={firstName}
                                     >
                                       Nome
                                     </label>
@@ -343,6 +414,7 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="first-name-input"
+                                      maxLength={100}
                                       id="first-name-input"
                                       {...register('person.first_name')}
                                     />
@@ -360,6 +432,7 @@ export default function CustomerForm() {
                                     <label
                                       className="form-label"
                                       htmlFor="last-name-input"
+                                      ref={lastName}
                                     >
                                       Sobrenome
                                     </label>
@@ -367,6 +440,7 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="last-name-input"
+                                      maxLength={100}
                                       id="last-name-input"
                                       {...register('person.last_name')}
                                     />
@@ -386,6 +460,7 @@ export default function CustomerForm() {
                                     <label
                                       className="form-label"
                                       htmlFor="cpf-input"
+                                      ref={cpf}
                                     >
                                       CPF
                                     </label>
@@ -393,7 +468,9 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="cpf-input"
+                                      maxLength={15}
                                       id="cpf-input"
+                                      {...register('person.cpf')}
                                     />
                                   </div>
                                 </div>
@@ -402,6 +479,7 @@ export default function CustomerForm() {
                                     <label
                                       className="form-label"
                                       htmlFor="identity-input"
+                                      ref={identity}
                                     >
                                       Identidade
                                     </label>
@@ -409,7 +487,9 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="identity-input"
+                                      maxLength={20}
                                       id="identity-input"
+                                      {...register('person.identity')}
                                     />
                                   </div>
                                 </div>
@@ -420,6 +500,7 @@ export default function CustomerForm() {
                                     <label
                                       className="form-label"
                                       htmlFor="dispatcher-input"
+                                      ref={dispatcher}
                                     >
                                       Orgão Emissor
                                     </label>
@@ -427,7 +508,9 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="dispatcher-input"
+                                      maxLength={10}
                                       id="dispatcher-input"
+                                      {...register('person.dispatcher')}
                                     />
                                   </div>
                                 </div>
@@ -436,6 +519,7 @@ export default function CustomerForm() {
                                     <label
                                       className="form-label"
                                       htmlFor="birthday-date-input"
+                                      ref={birthday}
                                     >
                                       Data de Nascimento
                                     </label>
@@ -480,6 +564,7 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="street-input"
+                                      maxLength={100}
                                       id="street-input"
                                       {...register('address.street')}
                                     />
@@ -504,7 +589,9 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="complement-input"
+                                      maxLength={50}
                                       id="complement-input"
+                                      {...register('address.complement')}
                                     />
                                   </div>
                                 </div>
@@ -522,6 +609,7 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="neighborhood-input"
+                                      maxLength={50}
                                       id="neighborhood-input"
                                       {...register('address.neighborhood')}
                                     />
@@ -549,6 +637,7 @@ export default function CustomerForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="city-input"
+                                      maxLength={50}
                                       id="city-input"
                                       {...register('address.city')}
                                     />
@@ -597,6 +686,7 @@ export default function CustomerForm() {
                                       className="form-control"
                                       autoComplete="zip-code-input"
                                       id="zip-code-input"
+                                      maxLength={10}
                                       {...register('address.zip_code')}
                                     />
                                     <div className="invalid mt-1 ms-1">

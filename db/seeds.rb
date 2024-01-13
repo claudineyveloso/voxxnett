@@ -26,6 +26,33 @@ User.create(
   }]
 )
 
+2.times do
+  Customer.create!(
+    people_type: %w[fisica juridica].sample,
+    phone: Faker::PhoneNumber.cell_phone,
+    cell_phone: Faker::PhoneNumber.cell_phone,
+    email: Faker::Internet.email,
+    people_attributes: [{
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      cpf_cnpj: '45623456789',
+      identity_municipal_registration: 'MG-4.345-009',
+      dispatcher: 'SSPMG',
+      birthday_date: Faker::Date.birthday(min_age: 18, max_age: 65)
+    }],
+    addresses_attributes: [{
+      street: Faker::Address.street_name,
+      complement: Faker::Address.city,
+      neighborhood: Faker::Address.community,
+      city: Faker::Address.city,
+      state: %w[SP MG RJ GO RS].sample,
+      zip_code: '30000-000'
+    }]
+  )
+end
+
+# user.customers << Customer.find(user_data[:roles_ids]) if user_data[:roles_ids].present?
+
 # 130.times do
 #   User.create(
 #     user_name: "#{Faker::Name.first_name}""#{Faker::Name.last_name}",

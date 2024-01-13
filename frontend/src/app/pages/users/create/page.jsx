@@ -1,8 +1,8 @@
 'use client';
-import { useContext, useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '../../../context/AuthContext';
-import { createUser } from '@/app/components/api/page';
+import { createUser, getCustomers } from '@/app/components/api/page';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -12,28 +12,41 @@ import HeaderVertical from '@/app/components/headerVertical/page';
 import BrazilianStates from '@/app/components/brazilianStates';
 
 export default function UserForm() {
-  const userSchema = z.object({
-    user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
-    email: z.string().email('Informe um endereço de e-mail válido!'),
-    password: z
-      .string()
-      .nonempty('A senha é obrigatória')
-      .min(8, 'A senha deve ter no mínimo 8 caracteres.'),
-    user_type: z.string().refine(
-      (valor) => {
-        return valor.trim() !== '';
-      },
-      {
-        message: 'Tipo de usuário não pode ficar vazio!'
-      }
-    )
-  });
+  const userSchema = z
+    .object({
+      user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
+      email: z.string().email('Informe um endereço de e-mail válido!'),
+      password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres.'),
+      password_confirmation: z.string().optional(true),
+      user_type: z.string().refine(
+        (valor) => {
+          return valor.trim() !== '';
+        },
+        {
+          message: 'Tipo de usuário não pode ficar vazio!'
+        }
+      ),
 
-  const router = useRouter();
+      customer: z.string().refine(
+        (valor) => {
+          return valor.trim() !== '';
+        },
+        {
+          message: 'Cliente não pode ficar vazio!'
+        }
+      )
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: 'A senha não corresponde com a confirmação de senha!',
+      path: ['password_confirmation'] // path of error
+    });
 
   const personSchema = z.object({
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
+    cpf: z.string().optional(true),
+    identity: z.string().optional(true),
+    dispatcher: z.string().optional(true),
     birthday_date: z
       .string()
       .nonempty('A data de aniversário não pode ficar vazio!')
@@ -41,6 +54,7 @@ export default function UserForm() {
 
   const addressSchema = z.object({
     street: z.string().nonempty('Logradouro não pode ficar vazio!'),
+    complement: z.string().optional(true),
     neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
     city: z.string().nonempty('Cidade não pode ficar vazio!'),
     state: z.string().nonempty('Estado não pode ficar vazio!'),
@@ -53,36 +67,11 @@ export default function UserForm() {
     address: addressSchema
   });
 
-  const { authenticated, handleLogin } = useContext(AuthContext);
-  const [userData, setUserData] = useState({
-    user: {
-      user_name: '',
-      email: '',
-      user_type: '',
-      password: '',
-      people_attributes: [
-        {
-          first_name: '',
-          last_name: '',
-          cpf_cnpj: '',
-          identity_municipal_registration: '',
-          dispatcher: '',
-          birthday_date: ''
-        }
-      ],
-      addresses_attributes: [
-        {
-          street: '',
-          complement: '',
-          neighborhood: '',
-          city: '',
-          state: '',
-          zip_code: ''
-        }
-      ]
-    }
-  });
+  const router = useRouter();
 
+  const [customerData, setCustomerData] = useState([]);
+  const [searchCustomer, setSearchCustomer] = useState('');
+  const { authenticated, handleLogin } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -104,7 +93,21 @@ export default function UserForm() {
     // Adicione a lógica para lidar com o estado selecionado, se necessário
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getCustomers(searchCustomer);
+        //debugger;
+        setCustomerData(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar os dados do cliente:', error);
+      }
+    };
+    fetchData();
+  }, [searchCustomer]);
+
   const onSubmit = async (data) => {
+    debugger;
     const objectState = {
       user: {
         email: data.user.email,
@@ -115,9 +118,8 @@ export default function UserForm() {
           {
             first_name: data.person.first_name,
             last_name: data.person.last_name,
-            cpf_cnpj: data.person.cpf_cnpj,
-            identity_municipal_registration:
-              data.person.identity_municipal_registration,
+            cpf_cnpj: data.person.cpf,
+            identity_municipal_registration: data.person.identity,
             dispatcher: data.person.dispatcher,
             birthday_date: data.person.birthday_date
           }
@@ -134,13 +136,6 @@ export default function UserForm() {
         ]
       }
     };
-    setUserData(objectState);
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${localStorage.getItem('voxxNettUseToken')}`,
-    //   },
-    // };
     //debugger
     console.log('Claudiney Veloso', objectState);
     //const apiUrl = 'http://localhost:3001'
@@ -250,7 +245,35 @@ export default function UserForm() {
                               </div>
                             </div>
                           </div>
-
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="password-input"
+                              >
+                                Confirmar Senha
+                              </label>
+                              <input
+                                type="password"
+                                className="form-control"
+                                autoComplete="password-confirmation-input"
+                                id="password-confirmation-input"
+                                {...register('user.password_confirmation')}
+                              />
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.user?.password_confirmation && (
+                                  <span>
+                                    {
+                                      errors?.user?.password_confirmation
+                                        .message
+                                    }
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
                           <div className="col-md-6">
                             <div className="mb-3">
                               <label
@@ -278,6 +301,41 @@ export default function UserForm() {
                               <div className="invalid mt-1 ms-1">
                                 {errors?.user?.user_type && (
                                   <span>{errors?.user?.user_type.message}</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="user-type-select"
+                              >
+                                Cliente
+                              </label>
+                              <select
+                                {...register('user.customer')}
+                                defaultValue={defaultValue}
+                                id="customer-select"
+                                className="form-select"
+                                aria-label="Floating label select example"
+                              >
+                                <option value="">Selecione...</option>
+                                {customerData?.map((v, i) => {
+                                  return (
+                                    <option
+                                      data={v.people?.first_name}
+                                      key={v.id}
+                                      value={v.id}
+                                    >
+                                      {v?.people[0]?.first_name}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.user?.customer && (
+                                  <span>{errors?.user?.customer.message}</span>
                                 )}
                               </div>
                             </div>
@@ -386,6 +444,7 @@ export default function UserForm() {
                                       className="form-control"
                                       autoComplete="cpf-input"
                                       id="cpf-input"
+                                      {...register('person.cpf')}
                                     />
                                   </div>
                                 </div>
@@ -402,6 +461,7 @@ export default function UserForm() {
                                       className="form-control"
                                       autoComplete="identity-input"
                                       id="identity-input"
+                                      {...register('person.identity')}
                                     />
                                   </div>
                                 </div>
@@ -420,6 +480,7 @@ export default function UserForm() {
                                       className="form-control"
                                       autoComplete="dispatcher-input"
                                       id="dispatcher-input"
+                                      {...register('person.dispatcher')}
                                     />
                                   </div>
                                 </div>
@@ -496,7 +557,7 @@ export default function UserForm() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="complement-input"
-                                      id="complement-input"
+                                      {...register('address.complement')}
                                     />
                                   </div>
                                 </div>

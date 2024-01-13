@@ -22,7 +22,6 @@ export default function Customers() {
       try {
         const response = await getCustomers(searchCustomer);
         setCustomerData(response.data);
-        debugger;
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
       } catch (error) {
         console.error('Erro ao buscar os dados do cliente:', error);
@@ -194,7 +193,9 @@ export default function Customers() {
                                   tabIndex="0"
                                   style={{ minWidth: '184px', width: '280px' }}
                                 >
-                                  <div className="gridjs-th-content">Email</div>
+                                  <div className="gridjs-th-content">
+                                    Nome/Razão Social
+                                  </div>
                                   <button
                                     tabIndex="-1"
                                     aria-label="Sort column ascending"
@@ -208,7 +209,9 @@ export default function Customers() {
                                   tabIndex="0"
                                   style={{ minWidth: '177px', width: '80px' }}
                                 >
-                                  <div className="gridjs-th-content">Tipo</div>
+                                  <div className="gridjs-th-content">
+                                    Tipo Pessoa
+                                  </div>
                                   <button
                                     tabIndex="-1"
                                     aria-label="Sort column ascending"
@@ -223,7 +226,7 @@ export default function Customers() {
                                   style={{ minWidth: '199px', width: '100px' }}
                                 >
                                   <div className="gridjs-th-content">
-                                    Cliente
+                                    CPF/CNPJ
                                   </div>
                                   <button
                                     tabIndex="-1"
@@ -266,12 +269,7 @@ export default function Customers() {
                                     return (
                                       <tr className="gridjs-tr" key={i}>
                                         <td data-column-id="code">
-                                          <span>
-                                            <p>Claudiney</p>
-                                            <a href="#" className="text-body">
-                                              {data.id}
-                                            </a>
-                                          </span>
+                                          {data.people[0]?.first_name}
                                         </td>
                                         <td
                                           data-column-id="code"
@@ -289,9 +287,11 @@ export default function Customers() {
                                             </span>
                                           </span>
                                         </td>
-                                        <td data-column-id="code">{data.id}</td>
                                         <td data-column-id="code">
-                                          {data.phone}
+                                          {data.people[0]?.cpf_cnpj}
+                                        </td>
+                                        <td data-column-id="code">
+                                          {data.addresses[0]?.street}
                                         </td>
 
                                         <td

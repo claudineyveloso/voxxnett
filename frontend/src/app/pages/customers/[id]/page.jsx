@@ -1,8 +1,8 @@
 'use client';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { AuthContext } from '../../../context/AuthContext';
-import { editUser, updateUser } from '@/app/components/api/page';
+import { editCustomer, updateCustomer } from '@/app/components/api/page';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -12,25 +12,28 @@ import moment from 'moment';
 import HeaderVertical from '@/app/components/headerVertical/page';
 import BrazilianStates from '@/app/components/brazilianStates';
 
-export default function EditUser() {
-  const userSchema = z.object({
-    user_name: z.string().nonempty('Usuário não pode ficar vazio!'),
-    email: z.string().email('Informe um endereço de e-mail válido!'),
-    user_type: z.string().refine(
+export default function EditCustomer() {
+  const customerSchema = z.object({
+    people_type: z.string().refine(
       (valor) => {
         return valor.trim() !== '';
       },
       {
         message: 'Tipo de usuário não pode ficar vazio!'
       }
-    )
+    ),
+    phone: z.string().optional(true),
+    cell_phone: z.string().optional(true),
+    observation: z.string().optional(true),
+    email: z.string().email('Informe um endereço de e-mail válido!'),
+    active: z.string().optional(true)
   });
 
   const personSchema = z.object({
     id: z.string().optional(true),
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
-    cpf_cnpj: z.string().optional(true),
+    cpf: z.string().optional(true),
     identity: z.string().optional(true),
     dispatcher: z.string().optional(true),
     birthday_date: z
@@ -49,17 +52,20 @@ export default function EditUser() {
   });
 
   const schema = z.object({
-    user: userSchema,
+    customer: customerSchema,
     person: personSchema,
     address: addressSchema
   });
 
   const { authenticated, handleLogin } = useContext(AuthContext);
-  const [userData, setUserData] = useState({
-    user: {
-      user_name: '',
+  const [customerData, setCustomerData] = useState({
+    customer: {
+      people_type: '',
+      phone: '',
+      cell_phone: '',
+      observation: '',
       email: '',
-      user_type: '',
+      active: '',
       people_attributes: [
         {
           first_name: '',
@@ -86,8 +92,10 @@ export default function EditUser() {
   const params = useParams();
   const [peopleId, setPeopleId] = useState(0);
   const [AddressId, setAddressId] = useState(0);
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerCellPhone, setCustomerCellPhone] = useState('');
 
-  console.log('Dados do usuario', userData);
+  console.log('Dados do usuario', customerData);
 
   const {
     reset,
@@ -99,33 +107,60 @@ export default function EditUser() {
     resolver: zodResolver(schema)
   });
 
+  const firstName = useRef();
+  const lastName = useRef();
+  const cpf = useRef();
+  const identity = useRef();
+  const dispatcher = useRef();
+  const birthday = useRef();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await editUser(
+        const response = await editCustomer(
           params.id,
           localStorage.getItem('voxxNettUseToken')
         );
         let defaultValues = {
-          user: {},
+          customer: {},
           person: {},
           address: {}
         };
-        debugger;
+        //debugger;
         console.log(
           'data formatada',
           moment
             .utc(response.data.people[0]?.birthday_date)
             .format('DD/MM/YYYY')
         );
+
+        // if (response.data?.people_type === 'fisica') {
+        //   firstName.current.textContent = 'Nome';
+        //   lastName.current.textContent = 'Sobrenome';
+        //   cpf.current.textContent = 'CPF';
+        //   identity.current.textContent = 'Identidade';
+        //   dispatcher.current.textContent = 'Orgão Emissor';
+        //   birthday.current.textContent = 'Data de Nascimento';
+        // } else {
+        //   firstName.current.textContent = 'Razão Social';
+        //   lastName.current.textContent = 'Nome Fantasia';
+        //   cpf.current.textContent = 'CNPJ';
+        //   identity.current.textContent = 'Inscrição Estadual';
+        //   dispatcher.current.textContent = 'Orgão Emissor';
+        //   birthday.current.textContent = 'Data da Fundação';
+        // }
+        //debugger;
         setPeopleId(response.data.people[0]?.id);
         setAddressId(response.data.addresses[0]?.id);
-        defaultValues.user.user_name = response.data?.user_name;
-        defaultValues.user.email = response.data?.email;
-        defaultValues.user.user_type = response.data?.user_type;
+        defaultValues.customer.people_type = response.data?.people_type;
+        defaultValues.customer.phone = response.data?.phone;
+        defaultValues.customer.cell_phone = response.data?.cell_phone;
+        defaultValues.customer.observation = response.data?.observation;
+        defaultValues.customer.email = response.data?.email;
+        defaultValues.customer.active = response.data?.active;
         defaultValues.person.first_name = response.data.people[0]?.first_name;
         defaultValues.person.last_name = response.data.people[0]?.last_name;
-        defaultValues.person.cpf_cnpj = response.data.people[0]?.cpf_cnpj;
+        defaultValues.person.cpf = response.data.people[0]?.cpf_cnpj;
         defaultValues.person.identity =
           response.data.people[0]?.identity_municipal_registration;
         defaultValues.person.dispatcher = response.data.people[0]?.dispatcher;
@@ -148,11 +183,10 @@ export default function EditUser() {
     fetchData();
   }, [setValue, params.id, reset]);
 
-  const optionsTypeUser = [
+  const optionsPeopleType = [
     { value: '', label: 'Selecione...' },
-    { value: 'administrador', label: 'Administrador' },
-    { value: 'proprietario', label: 'Proprietário' },
-    { value: 'atendimento', label: 'Atendimento' }
+    { value: 'fisica', label: 'Física' },
+    { value: 'juridica', label: 'Jurídica' }
   ];
   const defaultValue = '';
 
@@ -162,19 +196,20 @@ export default function EditUser() {
   };
 
   const onSubmit = async (data) => {
-    debugger;
     const objectState = {
-      user: {
-        email: data.user.email,
-        user_name: data.user.user_name,
-        user_type: data.user.user_type,
-        //password: data.user.password,
+      customer: {
+        people_type: data.customer.people_type,
+        phone: data.customer.phone,
+        cell_phone: data.customer.cell_phone,
+        observation: data.customer.observation,
+        email: data.customer.email,
+        active: data.customer.active,
         people_attributes: [
           {
             id: peopleId,
             first_name: data.person.first_name,
             last_name: data.person.last_name,
-            cpf_cnpj: data.person.cpf_cnpj,
+            cpf_cnpj: data.person.cpf,
             identity_municipal_registration: data.person.identity,
             dispatcher: data.person.dispatcher,
             birthday_date: data.person.birthday_date
@@ -193,10 +228,10 @@ export default function EditUser() {
         ]
       }
     };
-    setUserData(objectState);
+    setCustomerData(objectState);
     //debugger;
     console.log('Claudiney Veloso', objectState);
-    await updateUser(
+    await updateCustomer(
       params.id,
       objectState,
       localStorage.getItem('voxxNettUseToken')
@@ -205,18 +240,40 @@ export default function EditUser() {
         console.log('Response:', response.data);
         Swal.fire({
           icon: 'success',
-          title: 'Usuário atualizado com sucesso!',
+          title: 'Cliente atualizado com sucesso!',
           showConfirmButton: false,
           timer: 1500
         }).then(() => {
           // Redirecione para a listagem de usuários
-          router.push('/pages/users');
+          router.push('/pages/customers');
         });
       })
       .catch((error) => {
         console.error('Erro:', error);
         router.push('/pages/error');
       });
+  };
+
+  const handlePhoneMask = (event) => {
+    let inputValue = event.target.value;
+    let lengthInput = 0;
+    event.target.name === 'customer.phone'
+      ? (lengthInput = 9)
+      : (lengthInput = 10);
+
+    inputValue = inputValue.replace(/\D/g, '');
+    if (inputValue.length >= 2) {
+      inputValue = `(${inputValue.substring(0, 2)}) ${inputValue.substring(2)}`;
+    }
+    if (inputValue.length >= lengthInput) {
+      inputValue = `${inputValue.substring(
+        0,
+        lengthInput
+      )}-${inputValue.substring(lengthInput)}`;
+    }
+    event.target.name === 'customer.phone'
+      ? setCustomerPhone(inputValue)
+      : setCustomerCellPhone(inputValue);
   };
 
   return (
@@ -231,12 +288,89 @@ export default function EditUser() {
               <div className="col-lg-12">
                 <div className="card">
                   <div className="card-header">
-                    <h4 className="card-title mb-0">Cadastro de usuários</h4>
+                    <h4 className="card-title mb-0">Dados do Cliente</h4>
                   </div>
                   <div className="card-body">
                     <div className="">
-                      <form id="formUser" onSubmit={handleSubmit(onSubmit)}>
+                      <form id="formCustomer" onSubmit={handleSubmit(onSubmit)}>
                         <div className="row">
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="people-type-select"
+                              >
+                                Tipo de Pessoa
+                              </label>
+                              <select
+                                {...register('customer.people_type')}
+                                defaultValue={defaultValue}
+                                id="people-type-select"
+                                className="form-select"
+                                aria-label="Floating label select example"
+                              >
+                                {optionsPeopleType.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="invalid mt-1 ms-1">
+                                {errors?.customer?.people_type && (
+                                  <span>
+                                    {errors?.customer?.people_type.message}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="phone-input"
+                              >
+                                Telefone
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="phone-input"
+                                placeholder="(DDD) 1234-5678"
+                                maxLength={14}
+                                id="phone-input"
+                                {...register('customer.phone')}
+                                onChange={handlePhoneMask}
+                                value={customerPhone}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="cell-phone-input"
+                              >
+                                Celular
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                autoComplete="cell-phone-input"
+                                placeholder="(DDD) 99999-9999"
+                                maxLength={15}
+                                id="cell-phone-input"
+                                {...register('customer.cell_phone')}
+                                onChange={handlePhoneMask}
+                                value={customerCellPhone}
+                              />
+                            </div>
+                          </div>
                           <div className="col-md-6">
                             <div className="mb-3">
                               <label
@@ -250,71 +384,39 @@ export default function EditUser() {
                                 className="form-control"
                                 autoComplete="email-input"
                                 id="email-input"
-                                {...register('user.email')}
+                                {...register('customer.email')}
                               />
                               <div className="invalid mt-1 ms-1">
-                                {errors?.user?.email && (
-                                  <span>{errors?.user?.email.message}</span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-md-6">
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="user-name-input"
-                              >
-                                Usuário
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                autoComplete="user-name-input"
-                                id="user-name-input"
-                                {...register('user.user_name')}
-                              />
-                              <div className="invalid mt-1 ms-1">
-                                {errors?.user?.user_name && (
-                                  <span>{errors?.user?.user_name.message}</span>
+                                {errors?.customer?.email && (
+                                  <span>{errors?.customer?.email.message}</span>
                                 )}
                               </div>
                             </div>
                           </div>
                         </div>
                         <div className="row">
-                          <div className="col-md-6">
+                          <div className="col-md-12">
                             <div className="mb-3">
                               <label
                                 className="form-label"
-                                htmlFor="user-type-select"
+                                htmlFor="observation-input"
                               >
-                                Tipo de Usuário
+                                Observação
                               </label>
-                              <select
-                                {...register('user.user_type')}
-                                defaultValue={defaultValue}
-                                id="user-type-select"
-                                className="form-select"
-                                aria-label="Floating label select example"
-                              >
-                                {optionsTypeUser.map((option) => (
-                                  <option
-                                    key={option.value}
-                                    value={option.value}
-                                  >
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
-                              <div className="invalid mt-1 ms-1">
-                                {errors?.user?.user_type && (
-                                  <span>{errors?.user?.user_type.message}</span>
-                                )}
-                              </div>
+                              <input
+                                type="textarea"
+                                className="form-control"
+                                autoComplete="observation-input"
+                                id="observation-input"
+                                rows={4}
+                                cols={40}
+                                style={{ height: '150px' }}
+                                {...register('customer.observation')}
+                              />
                             </div>
                           </div>
                         </div>
+
                         <hr className="my-4" />
                         <div className="row">
                           <ul className="nav nav-tabs" role="tablist">
@@ -359,7 +461,8 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="first-name-input"
+                                      htmlFor="firstName"
+                                      ref={firstName}
                                     >
                                       Nome
                                     </label>
@@ -367,6 +470,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="first-name-input"
+                                      maxLength={100}
                                       id="first-name-input"
                                       {...register('person.first_name')}
                                     />
@@ -384,6 +488,7 @@ export default function EditUser() {
                                     <label
                                       className="form-label"
                                       htmlFor="last-name-input"
+                                      ref={lastName}
                                     >
                                       Sobrenome
                                     </label>
@@ -391,6 +496,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="last-name-input"
+                                      maxLength={100}
                                       id="last-name-input"
                                       {...register('person.last_name')}
                                     />
@@ -410,6 +516,7 @@ export default function EditUser() {
                                     <label
                                       className="form-label"
                                       htmlFor="cpf-input"
+                                      ref={cpf}
                                     >
                                       CPF
                                     </label>
@@ -417,9 +524,9 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="cpf-input"
+                                      maxLength={15}
                                       id="cpf-input"
-                                      name="person.cpf"
-                                      {...register('person.cpf_cnpj')}
+                                      {...register('person.cpf')}
                                     />
                                   </div>
                                 </div>
@@ -428,6 +535,7 @@ export default function EditUser() {
                                     <label
                                       className="form-label"
                                       htmlFor="identity-input"
+                                      ref={identity}
                                     >
                                       Identidade
                                     </label>
@@ -435,6 +543,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="identity-input"
+                                      maxLength={20}
                                       id="identity-input"
                                       {...register('person.identity')}
                                     />
@@ -447,6 +556,7 @@ export default function EditUser() {
                                     <label
                                       className="form-label"
                                       htmlFor="dispatcher-input"
+                                      ref={dispatcher}
                                     >
                                       Orgão Emissor
                                     </label>
@@ -454,6 +564,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="dispatcher-input"
+                                      maxLength={10}
                                       id="dispatcher-input"
                                       {...register('person.dispatcher')}
                                     />
@@ -464,6 +575,7 @@ export default function EditUser() {
                                     <label
                                       className="form-label"
                                       htmlFor="birthday-date-input"
+                                      ref={birthday}
                                     >
                                       Data de Nascimento
                                     </label>
@@ -508,6 +620,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="street-input"
+                                      maxLength={100}
                                       id="street-input"
                                       {...register('address.street')}
                                     />
@@ -532,6 +645,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="complement-input"
+                                      maxLength={50}
                                       id="complement-input"
                                       {...register('address.complement')}
                                     />
@@ -551,6 +665,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="neighborhood-input"
+                                      maxLength={50}
                                       id="neighborhood-input"
                                       {...register('address.neighborhood')}
                                     />
@@ -578,6 +693,7 @@ export default function EditUser() {
                                       type="text"
                                       className="form-control"
                                       autoComplete="city-input"
+                                      maxLength={50}
                                       id="city-input"
                                       {...register('address.city')}
                                     />
@@ -626,6 +742,7 @@ export default function EditUser() {
                                       className="form-control"
                                       autoComplete="zip-code-input"
                                       id="zip-code-input"
+                                      maxLength={10}
                                       {...register('address.zip_code')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -645,7 +762,7 @@ export default function EditUser() {
                         <div className="row mt-2">
                           <div className="col-12 text-end">
                             <Link
-                              href="/pages/users"
+                              href="/pages/customers"
                               className="btn btn-danger me-1"
                             >
                               <i className="bx bx-x me-1 align-middle"></i>
@@ -654,8 +771,6 @@ export default function EditUser() {
                             <button
                               type="submit"
                               className="btn btn-success"
-                              //data-bs-toggle='modal'
-                              //data-bs-target="#success-btn"
                               id="btn-save-event"
                             >
                               <i className="bx bx-check me-1 align-middle"></i>

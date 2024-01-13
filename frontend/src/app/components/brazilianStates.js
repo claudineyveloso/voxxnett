@@ -29,13 +29,12 @@ const BrazilianStates = ({ onSelect, register }) => {
     { acronym: 'SP', name: 'São Paulo' },
     { acronym: 'SE', name: 'Sergipe' },
     { acronym: 'TO', name: 'Tocantins' }
-
-  ])
+  ]);
   return (
-    <select 
-    className='form-select' 
-    onChange={(e) => onSelect(e.target.value)} 
-    {...register('address.state')}
+    <select
+      className="form-select"
+      onChange={(e) => onSelect(e.target.value)}
+      {...register('address.state')}
     >
       <option value="">Selecione um estado</option>
       {stateList.map((state) => (

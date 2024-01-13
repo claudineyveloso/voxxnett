@@ -100,6 +100,7 @@ export default function EditUser() {
   });
 
   useEffect(() => {
+    debugger;
     const fetchData = async () => {
       try {
         const response = await editUser(
@@ -162,6 +163,7 @@ export default function EditUser() {
   };
 
   const onSubmit = async (data) => {
+    debugger;
     const objectState = {
       user: {
         email: data.user.email,

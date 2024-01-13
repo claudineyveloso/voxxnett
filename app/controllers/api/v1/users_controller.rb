@@ -7,16 +7,15 @@ module Api
       before_action :set_user, only: %i[show update destroy]
 
       def index
-        # binding.break
         users = params[:filter].nil? ? User.where(is_active: true).all.order(email: :asc) : User.where('email ILIKE ?', "%#{params[:filter]}%").order(email: :asc)
         # users = User.all.order(email: :asc)
         render json: users, each_serializer: UserSerializer
       end
 
       def custom_create
-        # binding.break
         user = User.create!(user_params)
         if user
+          # user.customers << Customer.find(params[:customers_ids]) if params[:customers_ids].present?
           render json: {
             status: { code: 200, message: 'Registered with successfully.' }
           }
@@ -34,6 +33,7 @@ module Api
 
       def update
         user = User.find(params[:id])
+        binding.break
         if user.update!(user_params)
           render json: {
             status: { code: 200, message: 'Updated with successfully..' }
@@ -66,6 +66,7 @@ module Api
                                      :user_type,
                                      :email,
                                      :password,
+                                     customers_ids: [],
                                      people_attributes: %i[id first_name last_name cpf_cnpj identity_municipal_registration dispatcher birthday_date],
                                      addresses_attributes: %i[id street complement neighborhood city state zip_code])
 

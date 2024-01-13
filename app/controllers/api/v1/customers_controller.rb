@@ -4,6 +4,8 @@ module Api
   module V1
     # CustomersControll er
     class CustomersController < ApplicationController
+      before_action :set_customer, only: %i[show edit update destroy]
+
       def index
         customers = if params[:filter].nil?
                       Customer.joins(:people).all.order('people.first_name')
@@ -22,7 +24,7 @@ module Api
       end
 
       def create
-        customer = Customer.create!(company_params)
+        customer = Customer.create!(customer_params)
         if customer
           render json: {
             status: { code: 200, message: 'Registered with successfully.' }
@@ -36,7 +38,7 @@ module Api
 
       def update
         customer = Customer.find(params[:id])
-        if customer.update!(company_params)
+        if customer.update!(customer_params)
           render json: {
             status: { code: 200, message: 'Updated with successfully..' }
           }
@@ -63,7 +65,7 @@ module Api
         @customer = Customer.find(params[:id])
       end
 
-      def company_params
+      def customer_params
         params.require(:customer).permit(:people_type,
                                          :cell_phone,
                                          :observation,

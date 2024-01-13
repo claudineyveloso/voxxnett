@@ -22,29 +22,27 @@ export default function EditCustomer() {
         message: 'Tipo de usuário não pode ficar vazio!'
       }
     ),
-    phone: z.string().optional(true),
-    cell_phone: z.string().optional(true),
-    observation: z.string().optional(true),
+    phone: z.string().optional(),
+    cell_phone: z.string().optional(),
+    observation: z.string().optional(),
     email: z.string().email('Informe um endereço de e-mail válido!'),
-    active: z.string().optional(true)
+    active: z.string().optional()
   });
 
   const personSchema = z.object({
-    id: z.string().optional(true),
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
-    cpf: z.string().optional(true),
-    identity: z.string().optional(true),
-    dispatcher: z.string().optional(true),
+    cpf: z.string().optional(),
+    identity: z.string().optional(),
+    dispatcher: z.string().optional(),
     birthday_date: z
       .string()
       .nonempty('A data de aniversário não pode ficar vazio!')
   });
 
   const addressSchema = z.object({
-    id: z.string().optional(true),
     street: z.string().nonempty('Logradouro não pode ficar vazio!'),
-    complement: z.string().optional(true),
+    complement: z.string().optional(),
     neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
     city: z.string().nonempty('Cidade não pode ficar vazio!'),
     state: z.string().nonempty('Estado não pode ficar vazio!'),
@@ -95,7 +93,7 @@ export default function EditCustomer() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerCellPhone, setCustomerCellPhone] = useState('');
 
-  console.log('Dados do usuario', customerData);
+  //console.log('Dados do usuario', customerData);
 
   const {
     reset,
@@ -115,6 +113,7 @@ export default function EditCustomer() {
   const birthday = useRef();
 
   useEffect(() => {
+    //debugger;
     const fetchData = async () => {
       try {
         const response = await editCustomer(
@@ -126,30 +125,23 @@ export default function EditCustomer() {
           person: {},
           address: {}
         };
-        //debugger;
-        console.log(
-          'data formatada',
-          moment
-            .utc(response.data.people[0]?.birthday_date)
-            .format('DD/MM/YYYY')
-        );
-
-        // if (response.data?.people_type === 'fisica') {
-        //   firstName.current.textContent = 'Nome';
-        //   lastName.current.textContent = 'Sobrenome';
-        //   cpf.current.textContent = 'CPF';
-        //   identity.current.textContent = 'Identidade';
-        //   dispatcher.current.textContent = 'Orgão Emissor';
-        //   birthday.current.textContent = 'Data de Nascimento';
-        // } else {
-        //   firstName.current.textContent = 'Razão Social';
-        //   lastName.current.textContent = 'Nome Fantasia';
-        //   cpf.current.textContent = 'CNPJ';
-        //   identity.current.textContent = 'Inscrição Estadual';
-        //   dispatcher.current.textContent = 'Orgão Emissor';
-        //   birthday.current.textContent = 'Data da Fundação';
-        // }
-        //debugger;
+        debugger;
+        if (response.data?.people_type === 'fisica') {
+          firstName.current.textContent = 'Nome';
+          lastName.current.textContent = 'Sobrenome';
+          cpf.current.textContent = 'CPF';
+          identity.current.textContent = 'Identidade';
+          dispatcher.current.textContent = 'Orgão Emissor';
+          birthday.current.textContent = 'Data de Nascimento';
+        } else {
+          firstName.current.textContent = 'Razão Social';
+          lastName.current.textContent = 'Nome Fantasia';
+          cpf.current.textContent = 'CNPJ';
+          identity.current.textContent = 'Inscrição Estadual';
+          dispatcher.current.textContent = 'Orgão Emissor';
+          birthday.current.textContent = 'Data da Fundação';
+        }
+        debugger;
         setPeopleId(response.data.people[0]?.id);
         setAddressId(response.data.addresses[0]?.id);
         defaultValues.customer.people_type = response.data?.people_type;
@@ -196,11 +188,12 @@ export default function EditCustomer() {
   };
 
   const onSubmit = async (data) => {
+    debugger;
     const objectState = {
       customer: {
         people_type: data.customer.people_type,
-        phone: data.customer.phone,
-        cell_phone: data.customer.cell_phone,
+        //phone: data.customer.phone,
+        //cell_phone: data.customer.cell_phone,
         observation: data.customer.observation,
         email: data.customer.email,
         active: data.customer.active,

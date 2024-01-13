@@ -33,7 +33,6 @@ module Api
 
       def update
         user = User.find(params[:id])
-        binding.break
         if user.update!(user_params)
           render json: {
             status: { code: 200, message: 'Updated with successfully..' }

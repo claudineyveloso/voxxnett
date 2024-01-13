@@ -27,10 +27,9 @@ export default function EditUser() {
   });
 
   const personSchema = z.object({
-    id: z.string().optional(true),
     first_name: z.string().nonempty('Nome não pode ficar vazio!'),
     last_name: z.string().nonempty('Sobrenome não pode ficar vazio!'),
-    cpf_cnpj: z.string().optional(true),
+    cpf: z.string().optional(true),
     identity: z.string().optional(true),
     dispatcher: z.string().optional(true),
     birthday_date: z
@@ -39,7 +38,6 @@ export default function EditUser() {
   });
 
   const addressSchema = z.object({
-    id: z.string().optional(true),
     street: z.string().nonempty('Logradouro não pode ficar vazio!'),
     complement: z.string().optional(true),
     neighborhood: z.string().nonempty('Bairro não pode ficar vazio!'),
@@ -64,7 +62,7 @@ export default function EditUser() {
         {
           first_name: '',
           last_name: '',
-          cpf_cnpj: '',
+          cpf: '',
           identity: '',
           dispatcher: '',
           birthday_date: ''
@@ -100,7 +98,7 @@ export default function EditUser() {
   });
 
   useEffect(() => {
-    debugger;
+    //debugger;
     const fetchData = async () => {
       try {
         const response = await editUser(
@@ -126,7 +124,7 @@ export default function EditUser() {
         defaultValues.user.user_type = response.data?.user_type;
         defaultValues.person.first_name = response.data.people[0]?.first_name;
         defaultValues.person.last_name = response.data.people[0]?.last_name;
-        defaultValues.person.cpf_cnpj = response.data.people[0]?.cpf_cnpj;
+        defaultValues.person.cpf = response.data.people[0]?.cpf_cnpj;
         defaultValues.person.identity =
           response.data.people[0]?.identity_municipal_registration;
         defaultValues.person.dispatcher = response.data.people[0]?.dispatcher;
@@ -162,20 +160,19 @@ export default function EditUser() {
     // Adicione a lógica para lidar com o estado selecionado, se necessário
   };
 
-  const onSubmit = async (data) => {
-    debugger;
+  const onCreate = async (data) => {
+    //debugger;
     const objectState = {
       user: {
         email: data.user.email,
         user_name: data.user.user_name,
         user_type: data.user.user_type,
-        //password: data.user.password,
         people_attributes: [
           {
             id: peopleId,
             first_name: data.person.first_name,
             last_name: data.person.last_name,
-            cpf_cnpj: data.person.cpf_cnpj,
+            cpf_cnpj: data.person.cpf,
             identity_municipal_registration: data.person.identity,
             dispatcher: data.person.dispatcher,
             birthday_date: data.person.birthday_date
@@ -236,7 +233,7 @@ export default function EditUser() {
                   </div>
                   <div className="card-body">
                     <div className="">
-                      <form id="formUser" onSubmit={handleSubmit(onSubmit)}>
+                      <form id="formUser" onSubmit={handleSubmit(onCreate)}>
                         <div className="row">
                           <div className="col-md-6">
                             <div className="mb-3">
@@ -250,7 +247,7 @@ export default function EditUser() {
                                 type="email"
                                 className="form-control"
                                 autoComplete="email-input"
-                                id="email-input"
+                                id="email"
                                 {...register('user.email')}
                               />
                               <div className="invalid mt-1 ms-1">
@@ -262,17 +259,14 @@ export default function EditUser() {
                           </div>
                           <div className="col-md-6">
                             <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="user-name-input"
-                              >
+                              <label className="form-label" htmlFor="userName">
                                 Usuário
                               </label>
                               <input
                                 type="text"
                                 className="form-control"
-                                autoComplete="user-name-input"
-                                id="user-name-input"
+                                autoComplete="userName-input"
+                                id="userName"
                                 {...register('user.user_name')}
                               />
                               <div className="invalid mt-1 ms-1">
@@ -286,16 +280,13 @@ export default function EditUser() {
                         <div className="row">
                           <div className="col-md-6">
                             <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="user-type-select"
-                              >
+                              <label className="form-label" htmlFor="userType">
                                 Tipo de Usuário
                               </label>
                               <select
                                 {...register('user.user_type')}
                                 defaultValue={defaultValue}
-                                id="user-type-select"
+                                id="userType"
                                 className="form-select"
                                 aria-label="Floating label select example"
                               >
@@ -352,7 +343,7 @@ export default function EditUser() {
                             {/* Person data */}
                             <div
                               className="tab-pane active"
-                              id="person-data"
+                              id="person"
                               role="tabpanel"
                             >
                               <div className="row">
@@ -360,15 +351,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="first-name-input"
+                                      htmlFor="firstName"
                                     >
                                       Nome
                                     </label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="first-name-input"
-                                      id="first-name-input"
+                                      autoComplete="firstName"
+                                      id="firstName"
                                       {...register('person.first_name')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -391,8 +382,8 @@ export default function EditUser() {
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="last-name-input"
-                                      id="last-name-input"
+                                      autoComplete="lastName"
+                                      id="lastName"
                                       {...register('person.last_name')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -417,10 +408,10 @@ export default function EditUser() {
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="cpf-input"
-                                      id="cpf-input"
+                                      autoComplete="cpf"
+                                      id="cpf"
                                       name="person.cpf"
-                                      {...register('person.cpf_cnpj')}
+                                      {...register('person.cpf')}
                                     />
                                   </div>
                                 </div>
@@ -435,8 +426,8 @@ export default function EditUser() {
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="identity-input"
-                                      id="identity-input"
+                                      autoComplete="identity"
+                                      id="identity"
                                       {...register('person.identity')}
                                     />
                                   </div>
@@ -454,8 +445,8 @@ export default function EditUser() {
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="dispatcher-input"
-                                      id="dispatcher-input"
+                                      autoComplete="dispatcher"
+                                      id="dispatcher"
                                       {...register('person.dispatcher')}
                                     />
                                   </div>
@@ -464,15 +455,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="birthday-date-input"
+                                      htmlFor="birthday"
                                     >
                                       Data de Nascimento
                                     </label>
                                     <input
                                       type="date"
                                       className="form-control"
-                                      autoComplete="birthday-date-input"
-                                      id="birthday-date-input"
+                                      autoComplete="birthday"
+                                      id="birthday"
                                       {...register('person.birthday_date')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -501,15 +492,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="street-input"
+                                      htmlFor="street"
                                     >
                                       Logradouro
                                     </label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="street-input"
-                                      id="street-input"
+                                      autoComplete="street"
+                                      id="street"
                                       {...register('address.street')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -525,15 +516,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="complement-input"
+                                      htmlFor="complement"
                                     >
                                       Complemento
                                     </label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="complement-input"
-                                      id="complement-input"
+                                      autoComplete="complement"
+                                      id="complement"
                                       {...register('address.complement')}
                                     />
                                   </div>
@@ -544,15 +535,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="neighborhood-input"
+                                      htmlFor="neighborhood"
                                     >
                                       Bairro
                                     </label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="neighborhood-input"
-                                      id="neighborhood-input"
+                                      autoComplete="neighborhood"
+                                      id="neighborhood"
                                       {...register('address.neighborhood')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -571,15 +562,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="city-input"
+                                      htmlFor="city"
                                     >
                                       Cidade
                                     </label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="city-input"
-                                      id="city-input"
+                                      autoComplete="city"
+                                      id="city"
                                       {...register('address.city')}
                                     />
                                     <div className="invalid mt-1 ms-1">
@@ -597,7 +588,7 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="state-input"
+                                      htmlFor="state"
                                     >
                                       Estado
                                     </label>
@@ -618,15 +609,15 @@ export default function EditUser() {
                                   <div className="mb-3">
                                     <label
                                       className="form-label"
-                                      htmlFor="zip-code-input"
+                                      htmlFor="zipCode"
                                     >
                                       Cep
                                     </label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      autoComplete="zip-code-input"
-                                      id="zip-code-input"
+                                      autoComplete="zipCode"
+                                      id="zipCode"
                                       {...register('address.zip_code')}
                                     />
                                     <div className="invalid mt-1 ms-1">

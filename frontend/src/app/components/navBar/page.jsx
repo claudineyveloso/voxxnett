@@ -86,6 +86,7 @@ export default function NavBar(props) {
                     type="text"
                     className="form-control rounded bg-light border-0"
                     placeholder="Search..."
+                    id="search"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

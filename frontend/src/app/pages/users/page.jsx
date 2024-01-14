@@ -175,6 +175,7 @@ export default function Users() {
                               aria-label="Type a keyword..."
                               className="gridjs-input gridjs-search-input"
                               value={searchUser}
+                              id="searchUser"
                               //onChange={(e) => setSearchTerm(e.target.value)}
                               onChange={handleInputChange}
                             />
